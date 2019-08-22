@@ -7,9 +7,10 @@ import 'package:sum_types_generator/src/templates.dart';
 
 @immutable
 class SumTypeSpec {
-  const SumTypeSpec({@required this.anchorName, @required this.cases});
+  const SumTypeSpec({@required this.anchorName, @required this.sumTypeName, @required this.cases});
 
   final String anchorName;
+  final String sumTypeName;
   final Iterable<CaseSpec> cases;
 }
 
@@ -32,17 +33,26 @@ class CaseSpec {
   }
 }
 
-SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) => SumTypeSpec(
+SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
+  if (element is ClassElement && element.isMixin) {
+    return SumTypeSpec(
       anchorName: element.name,
+      sumTypeName: undecoratedID(element.name),
       cases: annotation.objectValue.getField("cases").toListValue().map(makeCaseSpec),
     );
+  }
+  throw Exception("A sum-type anchor must be a mix-in");
+}
 
-CaseSpec makeCaseSpec(DartObject obj) => CaseSpec(
-      type: obj.type.typeArguments.first,
-      name: obj.getField("name").toStringValue(),
-    );
+CaseSpec makeCaseSpec(DartObject obj) {
+  final caseType = obj.type.typeArguments.first;
+  return CaseSpec(
+    type: caseType,
+    name: obj.getField("name").toStringValue() ?? _defaultCaseName(caseType),
+  );
+}
 
-String caseName(CaseSpec caseSpec) => caseSpec.name ?? lowercaseLeadingID(undecoratedID(caseSpec.type.name));
+String _defaultCaseName(DartType type) => lowercaseLeadingID(undecoratedID(type.name));
 
 bool caseRequiresPayload(CaseSpec caseSpec) =>
     !(caseSpec.type.isDynamic || caseSpec.type.isVoid || caseSpec.type.isDartCoreNull);

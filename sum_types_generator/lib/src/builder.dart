@@ -16,30 +16,29 @@ class SumTypesGenerator extends GeneratorForAnnotation<annotations.SumType> {
 }
 
 String generateSumType(SumTypeSpec spec) {
-  final sumTypeName = undecoratedID(spec.anchorName);
   return classDecl(
-    name: sumTypeName,
+    name: spec.sumTypeName,
     mixins: [spec.anchorName],
     body: [
       // Case constructors
       for (final caseSpec in spec.cases)
         constructor(
           isConst: true,
-          type: sumTypeName,
-          name: caseName(caseSpec),
+          type: spec.sumTypeName,
+          name: caseSpec.name,
           posArgs: [
             if (caseRequiresPayload(caseSpec))
               arg(
                 type: caseTypeName(caseSpec),
-                name: caseName(caseSpec),
+                name: caseSpec.name,
               ),
           ],
           initializers: [
             [
               "this._unsafe(",
-              caseName(caseSpec),
+              caseSpec.name,
               ":",
-              if (caseRequiresPayload(caseSpec)) caseName(caseSpec) else "const Unit()",
+              if (caseRequiresPayload(caseSpec)) caseSpec.name else "const Unit()",
               ")"
             ].join(),
           ],
@@ -47,10 +46,10 @@ String generateSumType(SumTypeSpec spec) {
       // The unsafe constructor
       constructor(
         isConst: true,
-        type: sumTypeName,
+        type: spec.sumTypeName,
         name: "_unsafe",
         namedArgs: [
-          for (final caseSpec in spec.cases) arg(name: "this.${caseName(caseSpec)}"),
+          for (final caseSpec in spec.cases) arg(name: "this.${caseSpec.name}"),
         ],
         initializers: [
           [
@@ -58,8 +57,7 @@ String generateSumType(SumTypeSpec spec) {
             cartprod2(
               spec.cases,
               spec.cases,
-              tuple: (expected, other) =>
-                  other == expected ? "${caseName(expected)} != null" : "${caseName(other)} == null",
+              tuple: (expected, other) => other == expected ? "${expected.name} != null" : "${other.name} == null",
               row: (tuples) => tuples.join("&&"),
               result: (rows) => rows.join("||"),
             ),
@@ -79,17 +77,17 @@ String generateSumType(SumTypeSpec spec) {
                 if (caseRequiresPayload(caseSpec)) caseTypeName(caseSpec),
                 ")",
               ].join(),
-              name: caseName(caseSpec),
+              name: caseSpec.name,
             ),
         ],
         body: [
           for (final caseSpec in spec.cases) ...[
-            "if (this.${caseName(caseSpec)} != null) {",
-            "return ${caseName(caseSpec)}(",
-            if (caseRequiresPayload(caseSpec)) "this.${caseName(caseSpec)}",
+            "if (this.${caseSpec.name} != null) {",
+            "return ${caseSpec.name}(",
+            if (caseRequiresPayload(caseSpec)) "this.${caseSpec.name}",
             "); } else"
           ],
-          "{ throw StateError(\"an instance of \$${sumTypeName} has no case selected\"); }",
+          "{ throw StateError(\"an instance of \$${spec.sumTypeName} has no case selected\"); }",
         ],
       ),
       // The inexhaustive in-line switch
@@ -104,7 +102,7 @@ String generateSumType(SumTypeSpec spec) {
                 if (caseRequiresPayload(caseSpec)) caseTypeName(caseSpec),
                 ")",
               ].join(),
-              name: caseName(caseSpec),
+              name: caseSpec.name,
             ),
           arg(
             type: "@required T Function()",
@@ -114,7 +112,7 @@ String generateSumType(SumTypeSpec spec) {
         body: [
           "T _otherwise(Object _) => otherwise();",
           "return iswitch(",
-          ...spec.cases.map(caseName).map((c) => "$c: $c ?? _otherwise,"),
+          ...spec.cases.map((c) => "${c.name}: ${c.name} ?? _otherwise,"),
           ");",
         ],
       ),
@@ -122,7 +120,7 @@ String generateSumType(SumTypeSpec spec) {
       for (final caseSpec in spec.cases)
         finalField(
           type: caseRequiresPayload(caseSpec) ? caseTypeName(caseSpec) : "Unit",
-          name: caseName(caseSpec),
+          name: caseSpec.name,
         ),
     ],
   );
