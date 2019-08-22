@@ -8,7 +8,12 @@ environment:
   sdk: '>=2.4.0 <3.0.0'
 
 dependencies:
+  sum_types:
+    path: ../sum_types
 
 dev_dependencies:
+  sum_types_generator:
+    path: ../sum_types_generator
+  build_runner:
   pedantic: ^1.7.0
   test: ^1.5.0
