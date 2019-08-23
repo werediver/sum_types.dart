@@ -116,6 +116,22 @@ String generateSumType(SumTypeSpec spec) {
           ");",
         ],
       ),
+      // Equality test
+      "@override",
+      function(
+        type: "bool",
+        name: "operator ==",
+        posArgs: [arg(type: "dynamic", name: "other")],
+        body: [
+          "return",
+          [
+            "other.runtimeType == runtimeType",
+            for (final caseSpec in spec.cases) "other.${caseSpec.name} == ${caseSpec.name}"
+          ].join("&&"),
+          ";",
+        ],
+      ),
+      // Hash function
       // Fields
       for (final caseSpec in spec.cases)
         finalField(

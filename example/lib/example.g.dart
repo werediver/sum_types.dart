@@ -40,6 +40,15 @@ class Nat with _Nat {
     );
   }
 
+  @override
+  bool operator ==(
+    dynamic other,
+  ) {
+    return other.runtimeType == runtimeType &&
+        other.zero == zero &&
+        other.next == next;
+  }
+
   final Unit zero;
   final Nat next;
 }
@@ -147,6 +156,19 @@ class JSON with _JSON {
       boolean: boolean ?? _otherwise,
       empty: empty ?? _otherwise,
     );
+  }
+
+  @override
+  bool operator ==(
+    dynamic other,
+  ) {
+    return other.runtimeType == runtimeType &&
+        other.object == object &&
+        other.array == array &&
+        other.string == string &&
+        other.number == number &&
+        other.boolean == boolean &&
+        other.empty == empty;
   }
 
   final Map<String, JSON> object;
