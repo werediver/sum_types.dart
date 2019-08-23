@@ -142,6 +142,26 @@ String generateSumType(SumTypeSpec spec) {
           "return result;",
         ],
       ),
+      // To string conversion
+      "@override",
+      function(
+        type: "String",
+        name: "toString",
+        body: [
+          "final ctor = iswitch(",
+          ...spec.cases
+              .map((caseSpec) => [
+                    "${caseSpec.name}: ",
+                    if (caseSpec.requiresPayload)
+                      "(value) => \"${caseSpec.name}(\$value)\""
+                    else
+                      "() => \"${caseSpec.name}()\"",
+                  ].join())
+              .map(appendComma),
+          ");",
+          "return \"\$${spec.sumTypeName}.\$ctor\";",
+        ],
+      ),
       // Fields
       for (final caseSpec in spec.cases)
         finalField(

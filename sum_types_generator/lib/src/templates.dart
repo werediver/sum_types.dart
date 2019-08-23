@@ -87,10 +87,10 @@ String constructor({
       type,
       if (name != null) ".$name",
       "(",
-      ...posArgs.map(_appendComma),
+      ...posArgs.map(appendComma),
       if (namedArgs.isNotEmpty) ...[
         "{",
-        ...namedArgs.map(_appendComma),
+        ...namedArgs.map(appendComma),
         "}",
       ],
       ")",
@@ -113,10 +113,10 @@ String function({
       " ",
       name,
       "(",
-      ...posArgs.map(_appendComma),
+      ...posArgs.map(appendComma),
       if (namedArgs.isNotEmpty) ...[
         "{",
-        ...namedArgs.map(_appendComma),
+        ...namedArgs.map(appendComma),
         "}",
       ],
       ") {",
@@ -150,7 +150,7 @@ String finalField({@required String type, @required String name}) => [
       ";",
     ].join(" ");
 
-String _appendComma(String s) => "$s,";
+String appendComma(String s) => "$s,";
 
 Result cartprod2<A, B, Tuple, Row, Result>(
   Iterable<A> as,

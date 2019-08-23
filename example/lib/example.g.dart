@@ -57,6 +57,15 @@ class Nat with _Nat {
     return result;
   }
 
+  @override
+  String toString() {
+    final ctor = iswitch(
+      zero: () => "zero()",
+      next: (value) => "next($value)",
+    );
+    return "$Nat.$ctor";
+  }
+
   final Unit zero;
   final Nat next;
 }
@@ -189,6 +198,19 @@ class JSON with _JSON {
     result = 37 * result + boolean.hashCode;
     result = 37 * result + empty.hashCode;
     return result;
+  }
+
+  @override
+  String toString() {
+    final ctor = iswitch(
+      object: (value) => "object($value)",
+      array: (value) => "array($value)",
+      string: (value) => "string($value)",
+      number: (value) => "number($value)",
+      boolean: (value) => "boolean($value)",
+      empty: () => "empty()",
+    );
+    return "$JSON.$ctor";
   }
 
   final Map<String, JSON> object;
