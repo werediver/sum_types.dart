@@ -27,9 +27,9 @@ String generateSumType(SumTypeSpec spec) {
           type: spec.sumTypeName,
           name: caseSpec.name,
           posArgs: [
-            if (caseRequiresPayload(caseSpec))
+            if (caseSpec.requiresPayload)
               arg(
-                type: caseTypeName(caseSpec),
+                type: caseSpec.typeName,
                 name: caseSpec.name,
               ),
           ],
@@ -38,8 +38,8 @@ String generateSumType(SumTypeSpec spec) {
               "this._unsafe(",
               caseSpec.name,
               ":",
-              if (caseRequiresPayload(caseSpec)) caseSpec.name else "const Unit()",
-              ")"
+              if (caseSpec.requiresPayload) caseSpec.name else "const Unit()",
+              ")",
             ].join(),
           ],
         ),
@@ -74,7 +74,7 @@ String generateSumType(SumTypeSpec spec) {
             arg(
               type: [
                 "@required T Function(",
-                if (caseRequiresPayload(caseSpec)) caseTypeName(caseSpec),
+                if (caseSpec.requiresPayload) caseSpec.typeName,
                 ")",
               ].join(),
               name: caseSpec.name,
@@ -84,7 +84,7 @@ String generateSumType(SumTypeSpec spec) {
           for (final caseSpec in spec.cases) ...[
             "if (this.${caseSpec.name} != null) {",
             "return ${caseSpec.name}(",
-            if (caseRequiresPayload(caseSpec)) "this.${caseSpec.name}",
+            if (caseSpec.requiresPayload) "this.${caseSpec.name}",
             "); } else"
           ],
           "{ throw StateError(\"an instance of \$${spec.sumTypeName} has no case selected\"); }",
@@ -99,7 +99,7 @@ String generateSumType(SumTypeSpec spec) {
             arg(
               type: [
                 "T Function(",
-                if (caseRequiresPayload(caseSpec)) caseTypeName(caseSpec),
+                if (caseSpec.requiresPayload) caseSpec.typeName,
                 ")",
               ].join(),
               name: caseSpec.name,
@@ -119,7 +119,7 @@ String generateSumType(SumTypeSpec spec) {
       // Fields
       for (final caseSpec in spec.cases)
         finalField(
-          type: caseRequiresPayload(caseSpec) ? caseTypeName(caseSpec) : "Unit",
+          type: caseSpec.requiresPayload ? caseSpec.typeName : "Unit",
           name: caseSpec.name,
         ),
     ],

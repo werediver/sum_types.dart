@@ -16,18 +16,24 @@ class SumTypeSpec {
 
 @immutable
 class CaseSpec {
-  const CaseSpec({@required this.type, @required this.name});
+  const CaseSpec({@required this.typeName, @required this.requiresPayload, @required this.name});
 
-  final DartType type;
+  final String typeName;
+  final bool requiresPayload;
   final String name;
 
   @override
-  bool operator ==(dynamic other) => other.runtimeType == runtimeType && other.type == type && other.name == name;
+  bool operator ==(dynamic other) =>
+      other.runtimeType == runtimeType &&
+      other.typeName == typeName &&
+      other.requiresPayload == requiresPayload &&
+      other.name == name;
 
   @override
   int get hashCode {
     int result = 17;
-    result = 37 * result + type.hashCode;
+    result = 37 * result + typeName.hashCode;
+    result = 37 * result + requiresPayload.hashCode;
     result = 37 * result + name.hashCode;
     return result;
   }
@@ -35,35 +41,44 @@ class CaseSpec {
 
 SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
   if (element is ClassElement && element.isMixin) {
+    final anchorName = element.name;
+    final sumTypeName = undecoratedID(element.name);
+
     return SumTypeSpec(
-      anchorName: element.name,
-      sumTypeName: undecoratedID(element.name),
-      cases: annotation.objectValue.getField("cases").toListValue().map(makeCaseSpec),
+      anchorName: anchorName,
+      sumTypeName: sumTypeName,
+      cases: annotation.objectValue.getField("cases").toListValue().map(
+            (item) => makeCaseSpec(
+              item,
+              typeName: (type) => _typeName(
+                type,
+                resolve: (name) => name == anchorName ? sumTypeName : name,
+              ),
+            ),
+          ),
     );
   }
   throw Exception("A sum-type anchor must be a mix-in");
 }
 
-CaseSpec makeCaseSpec(DartObject obj) {
+CaseSpec makeCaseSpec(DartObject obj, {@required String Function(DartType) typeName}) {
   final caseType = obj.type.typeArguments.first;
   return CaseSpec(
-    type: caseType,
+    typeName: typeName(caseType),
+    requiresPayload: _caseTypeRequiresPayload(caseType),
     name: obj.getField("name").toStringValue() ?? _defaultCaseName(caseType),
   );
 }
 
+bool _caseTypeRequiresPayload(DartType type) => !(type.isDynamic || type.isVoid || type.isDartCoreNull);
+
 String _defaultCaseName(DartType type) => lowercaseLeadingID(undecoratedID(type.name));
 
-bool caseRequiresPayload(CaseSpec caseSpec) =>
-    !(caseSpec.type.isDynamic || caseSpec.type.isVoid || caseSpec.type.isDartCoreNull);
-
-String caseTypeName(CaseSpec caseSpec) => _typeName(caseSpec.type);
-
-String _typeName(DartType type) => [
-      "${type.name}",
+String _typeName(DartType type, {@required String Function(String) resolve}) => [
+      resolve(type.name),
       if (type is ParameterizedType && type.typeArguments.isNotEmpty) ...[
         "<",
-        type.typeArguments.map(_typeName).join(", "),
+        type.typeArguments.map((type) => _typeName(type, resolve: resolve)).join(", "),
         ">",
       ]
     ].join();
