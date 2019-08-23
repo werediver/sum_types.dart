@@ -132,6 +132,16 @@ String generateSumType(SumTypeSpec spec) {
         ],
       ),
       // Hash function
+      "@override",
+      getter(
+        type: "int",
+        name: "hashCode",
+        body: [
+          "var result = 17;",
+          for (final caseSpec in spec.cases) "result = 37 * result + ${caseSpec.name}.hashCode;",
+          "return result;",
+        ],
+      ),
       // Fields
       for (final caseSpec in spec.cases)
         finalField(

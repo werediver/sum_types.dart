@@ -49,6 +49,14 @@ class Nat with _Nat {
         other.next == next;
   }
 
+  @override
+  int get hashCode {
+    var result = 17;
+    result = 37 * result + zero.hashCode;
+    result = 37 * result + next.hashCode;
+    return result;
+  }
+
   final Unit zero;
   final Nat next;
 }
@@ -169,6 +177,18 @@ class JSON with _JSON {
         other.number == number &&
         other.boolean == boolean &&
         other.empty == empty;
+  }
+
+  @override
+  int get hashCode {
+    var result = 17;
+    result = 37 * result + object.hashCode;
+    result = 37 * result + array.hashCode;
+    result = 37 * result + string.hashCode;
+    result = 37 * result + number.hashCode;
+    result = 37 * result + boolean.hashCode;
+    result = 37 * result + empty.hashCode;
+    return result;
   }
 
   final Map<String, JSON> object;

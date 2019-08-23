@@ -129,6 +129,20 @@ String arg({String type, @required String name}) => [
       name,
     ].join(" ");
 
+String getter({
+  String type,
+  @required String name,
+  @required Iterable<String> body,
+}) =>
+    [
+      type,
+      " get ",
+      name,
+      "{",
+      body.join(" "),
+      "}",
+    ].join();
+
 String finalField({@required String type, @required String name}) => [
       "final",
       type,
