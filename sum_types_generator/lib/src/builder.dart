@@ -110,7 +110,7 @@ String generateSumType(SumTypeSpec spec) => classDecl(
           body: [
             "T _otherwise(Object _) => otherwise();",
             "return iswitch(",
-            ...spec.cases.map((c) => "${c.name}: ${c.name} ?? _otherwise,"),
+            ...spec.cases.map((c) => "${c.name}: ${c.name} ?? ${c.requiresPayload ? "_otherwise" : "otherwise"},"),
             ");",
           ],
         ),

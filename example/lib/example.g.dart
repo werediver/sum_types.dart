@@ -35,7 +35,7 @@ class Nat with _Nat {
   }) {
     T _otherwise(Object _) => otherwise();
     return iswitch(
-      zero: zero ?? _otherwise,
+      zero: zero ?? otherwise,
       next: next ?? _otherwise,
     );
   }
@@ -173,7 +173,7 @@ class JSON with _JSON {
       string: string ?? _otherwise,
       number: number ?? _otherwise,
       boolean: boolean ?? _otherwise,
-      empty: empty ?? _otherwise,
+      empty: empty ?? otherwise,
     );
   }
 
