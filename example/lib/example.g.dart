@@ -66,7 +66,9 @@ class Nat with _Nat {
     return "$Nat.$ctor";
   }
 
+  @protected
   final Unit zero;
+  @protected
   final Nat next;
 }
 
@@ -213,10 +215,16 @@ class JSON with _JSON {
     return "$JSON.$ctor";
   }
 
+  @protected
   final Map<String, JSON> object;
+  @protected
   final List<JSON> array;
+  @protected
   final String string;
+  @protected
   final double number;
+  @protected
   final bool boolean;
+  @protected
   final Unit empty;
 }

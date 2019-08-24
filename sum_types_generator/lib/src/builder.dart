@@ -161,10 +161,12 @@ String generateSumType(SumTypeSpec spec) => classDecl(
           ],
         ),
         // Fields
-        for (final caseSpec in spec.cases)
+        for (final caseSpec in spec.cases) ...[
+          "@protected",
           finalField(
             type: caseSpec.requiresPayload ? caseSpec.typeName : "Unit",
             name: caseSpec.name,
           ),
+        ],
       ],
     );
