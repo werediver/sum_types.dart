@@ -6,7 +6,19 @@ part of 'example.dart';
 // SumTypesGenerator
 // **************************************************************************
 
-class Nat with _Nat {
+abstract class _NatBase {
+  T iswitch<T>({
+    @required T Function() zero,
+    @required T Function(Nat) next,
+  });
+  T iswitcho<T>({
+    T Function() zero,
+    T Function(Nat) next,
+    @required T Function() otherwise,
+  });
+}
+
+class Nat with _Nat implements _NatBase {
   const Nat.zero() : this._unsafe(zero: const Unit());
   const Nat.next(
     Nat next,
@@ -15,6 +27,7 @@ class Nat with _Nat {
     this.zero,
     this.next,
   }) : assert(zero != null && next == null || zero == null && next != null);
+  @override
   T iswitch<T>({
     @required T Function() zero,
     @required T Function(Nat) next,
@@ -28,6 +41,7 @@ class Nat with _Nat {
     }
   }
 
+  @override
   T iswitcho<T>({
     T Function() zero,
     T Function(Nat) next,
@@ -72,7 +86,27 @@ class Nat with _Nat {
   final Nat next;
 }
 
-class JSON with _JSON {
+abstract class _JSONBase {
+  T iswitch<T>({
+    @required T Function(Map<String, JSON>) object,
+    @required T Function(List<JSON>) array,
+    @required T Function(String) string,
+    @required T Function(double) number,
+    @required T Function(bool) boolean,
+    @required T Function() empty,
+  });
+  T iswitcho<T>({
+    T Function(Map<String, JSON>) object,
+    T Function(List<JSON>) array,
+    T Function(String) string,
+    T Function(double) number,
+    T Function(bool) boolean,
+    T Function() empty,
+    @required T Function() otherwise,
+  });
+}
+
+class JSON with _JSON implements _JSONBase {
   const JSON.object(
     Map<String, JSON> object,
   ) : this._unsafe(object: object);
@@ -132,6 +166,7 @@ class JSON with _JSON {
                 number == null &&
                 boolean == null &&
                 empty != null);
+  @override
   T iswitch<T>({
     @required T Function(Map<String, JSON>) object,
     @required T Function(List<JSON>) array,
@@ -157,6 +192,7 @@ class JSON with _JSON {
     }
   }
 
+  @override
   T iswitcho<T>({
     T Function(Map<String, JSON>) object,
     T Function(List<JSON>) array,

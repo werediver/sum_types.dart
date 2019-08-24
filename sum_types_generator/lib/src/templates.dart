@@ -106,7 +106,7 @@ String function({
   @required String name,
   Iterable<String> posParams = const [],
   Iterable<String> namedParams = const [],
-  @required Iterable<String> body,
+  Iterable<String> body,
 }) =>
     [
       type,
@@ -119,9 +119,13 @@ String function({
         ...namedParams.map(appendComma),
         "}",
       ],
-      ") {",
-      body.join(" "),
-      "}",
+      ")",
+      if (body != null) ...[
+        "{",
+        body.join(" "),
+        "}",
+      ] else
+        ";",
     ].join();
 
 String param({String type, @required String name}) => [

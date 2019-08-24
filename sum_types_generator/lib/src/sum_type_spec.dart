@@ -7,12 +7,17 @@ import 'package:sum_types_generator/src/templates.dart';
 
 @immutable
 class SumTypeSpec {
-  const SumTypeSpec({@required this.anchorName, @required this.sumTypeName, @required this.cases})
-      : assert(anchorName != null),
+  const SumTypeSpec({
+    @required this.anchorName,
+    @required this.ifaceName,
+    @required this.sumTypeName,
+    @required this.cases,
+  })  : assert(anchorName != null),
         assert(sumTypeName != null),
         assert(cases != null);
 
   final String anchorName;
+  final String ifaceName;
   final String sumTypeName;
   final Iterable<CaseSpec> cases;
 }
@@ -55,6 +60,7 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
 
     return SumTypeSpec(
       anchorName: anchorName,
+      ifaceName: "${anchorName}Base",
       sumTypeName: sumTypeName,
       cases: annotation.objectValue.getField("cases").toListValue().map(
             (item) => makeCaseSpec(

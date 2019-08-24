@@ -7,7 +7,12 @@ part 'example.g.dart';
   Case<void>(name: "zero"),
   Case<_Nat>(name: "next"),
 ])
-mixin _Nat {}
+mixin _Nat implements _NatBase {
+  int toInt() => iswitch(
+        zero: () => 0,
+        next: (next) => 1 + next.toInt(),
+      );
+}
 
 @SumType([
   Case<Map<String, _JSON>>(name: "object"),
