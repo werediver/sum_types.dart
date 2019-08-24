@@ -7,7 +7,10 @@ import 'package:sum_types_generator/src/templates.dart';
 
 @immutable
 class SumTypeSpec {
-  const SumTypeSpec({@required this.anchorName, @required this.sumTypeName, @required this.cases});
+  const SumTypeSpec({@required this.anchorName, @required this.sumTypeName, @required this.cases})
+      : assert(anchorName != null),
+        assert(sumTypeName != null),
+        assert(cases != null);
 
   final String anchorName;
   final String sumTypeName;
@@ -16,27 +19,33 @@ class SumTypeSpec {
 
 @immutable
 class CaseSpec {
-  const CaseSpec({@required this.typeName, @required this.requiresPayload, @required this.name});
-
-  final String typeName;
-  final bool requiresPayload;
-  final String name;
+  const CaseSpec({
+    @required this.name,
+    @required this.typeName,
+    @required this.requiresPayload,
+  })  : assert(name != null),
+        assert(typeName != null),
+        assert(requiresPayload != null);
 
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
+      other.name == name &&
       other.typeName == typeName &&
-      other.requiresPayload == requiresPayload &&
-      other.name == name;
+      other.requiresPayload == requiresPayload;
 
   @override
   int get hashCode {
-    int result = 17;
+    var result = 17;
+    result = 37 * result + name.hashCode;
     result = 37 * result + typeName.hashCode;
     result = 37 * result + requiresPayload.hashCode;
-    result = 37 * result + name.hashCode;
     return result;
   }
+
+  final String name;
+  final String typeName;
+  final bool requiresPayload;
 }
 
 SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
@@ -64,9 +73,9 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
 CaseSpec makeCaseSpec(DartObject obj, {@required String Function(DartType) typeName}) {
   final caseType = obj.type.typeArguments.first;
   return CaseSpec(
+    name: obj.getField("name").toStringValue() ?? _defaultCaseName(caseType),
     typeName: typeName(caseType),
     requiresPayload: _caseTypeRequiresPayload(caseType),
-    name: obj.getField("name").toStringValue() ?? _defaultCaseName(caseType),
   );
 }
 
