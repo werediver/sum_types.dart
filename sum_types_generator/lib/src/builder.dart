@@ -26,9 +26,9 @@ String generateSumType(SumTypeSpec spec) {
           isConst: true,
           type: spec.sumTypeName,
           name: caseSpec.name,
-          posArgs: [
+          posParams: [
             if (caseSpec.requiresPayload)
-              arg(
+              param(
                 type: caseSpec.typeName,
                 name: caseSpec.name,
               ),
@@ -48,8 +48,8 @@ String generateSumType(SumTypeSpec spec) {
         isConst: true,
         type: spec.sumTypeName,
         name: "_unsafe",
-        namedArgs: [
-          for (final caseSpec in spec.cases) arg(name: "this.${caseSpec.name}"),
+        namedParams: [
+          for (final caseSpec in spec.cases) param(name: "this.${caseSpec.name}"),
         ],
         initializers: [
           [
@@ -69,9 +69,9 @@ String generateSumType(SumTypeSpec spec) {
       function(
         type: "T",
         name: "iswitch<T>",
-        namedArgs: [
+        namedParams: [
           for (final caseSpec in spec.cases)
-            arg(
+            param(
               type: [
                 "@required T Function(",
                 if (caseSpec.requiresPayload) caseSpec.typeName,
@@ -94,9 +94,9 @@ String generateSumType(SumTypeSpec spec) {
       function(
         type: "T",
         name: "iswitcho<T>",
-        namedArgs: [
+        namedParams: [
           for (final caseSpec in spec.cases)
-            arg(
+            param(
               type: [
                 "T Function(",
                 if (caseSpec.requiresPayload) caseSpec.typeName,
@@ -104,7 +104,7 @@ String generateSumType(SumTypeSpec spec) {
               ].join(),
               name: caseSpec.name,
             ),
-          arg(
+          param(
             type: "@required T Function()",
             name: "otherwise",
           ),
@@ -121,7 +121,7 @@ String generateSumType(SumTypeSpec spec) {
       function(
         type: "bool",
         name: "operator ==",
-        posArgs: [arg(type: "dynamic", name: "other")],
+        posParams: [param(type: "dynamic", name: "other")],
         body: [
           "return",
           [

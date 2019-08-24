@@ -78,8 +78,8 @@ String constructor({
   @required isConst,
   @required String type,
   String name,
-  Iterable<String> posArgs = const [],
-  Iterable<String> namedArgs = const [],
+  Iterable<String> posParams = const [],
+  Iterable<String> namedParams = const [],
   Iterable<String> initializers = const [],
 }) =>
     [
@@ -87,10 +87,10 @@ String constructor({
       type,
       if (name != null) ".$name",
       "(",
-      ...posArgs.map(appendComma),
-      if (namedArgs.isNotEmpty) ...[
+      ...posParams.map(appendComma),
+      if (namedParams.isNotEmpty) ...[
         "{",
-        ...namedArgs.map(appendComma),
+        ...namedParams.map(appendComma),
         "}",
       ],
       ")",
@@ -104,8 +104,8 @@ String constructor({
 String function({
   @required String type,
   @required String name,
-  Iterable<String> posArgs = const [],
-  Iterable<String> namedArgs = const [],
+  Iterable<String> posParams = const [],
+  Iterable<String> namedParams = const [],
   @required Iterable<String> body,
 }) =>
     [
@@ -113,10 +113,10 @@ String function({
       " ",
       name,
       "(",
-      ...posArgs.map(appendComma),
-      if (namedArgs.isNotEmpty) ...[
+      ...posParams.map(appendComma),
+      if (namedParams.isNotEmpty) ...[
         "{",
-        ...namedArgs.map(appendComma),
+        ...namedParams.map(appendComma),
         "}",
       ],
       ") {",
@@ -124,7 +124,7 @@ String function({
       "}",
     ].join();
 
-String arg({String type, @required String name}) => [
+String param({String type, @required String name}) => [
       if (type != null) type,
       name,
     ].join(" ");
