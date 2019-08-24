@@ -1,12 +1,12 @@
 import 'package:meta/meta.dart';
 
 String undecoratedID(String id) {
-  var offset = _idDecorationLen(id);
+  final offset = _idDecorationLen(id);
   return offset == 0 ? id : id.substring(offset);
 }
 
 String lowercaseLeadingID(String id) {
-  var offset = _idDecorationLen(id);
+  final offset = _idDecorationLen(id);
   final leadingLetter = id[offset];
   final lowercasedLeadingLetter = leadingLetter.toLowerCase();
   return leadingLetter == lowercasedLeadingLetter
@@ -75,7 +75,7 @@ String mixinDecl({
     ].join(" ");
 
 String constructor({
-  @required isConst,
+  @required bool isConst,
   @required String type,
   String name,
   Iterable<String> posParams = const [],
