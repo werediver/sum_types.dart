@@ -9,8 +9,8 @@ environment:
   sdk: '>=2.4.0 <3.0.0'
 
 dependencies:
+  meta:
   path:
 
 dev_dependencies:
   dependency_validator:
-  test: ^1.5.0

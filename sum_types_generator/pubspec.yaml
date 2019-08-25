@@ -8,6 +8,7 @@ environment:
   sdk: '>=2.4.0 <3.0.0'
 
 dependencies:
+  meta:
   sum_types:
     path: ../sum_types
   build:
@@ -16,4 +17,3 @@ dependencies:
 
 dev_dependencies:
   dependency_validator:
-  test: ^1.6.0
