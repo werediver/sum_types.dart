@@ -58,9 +58,7 @@ class Nat with _Nat implements _NatBase {
   bool operator ==(
     dynamic other,
   ) {
-    return other.runtimeType == runtimeType &&
-        other.zero == zero &&
-        other.next == next;
+    return other.runtimeType == runtimeType && other.zero == zero && other.next == next;
   }
 
   @override
@@ -130,42 +128,12 @@ class JSON with _JSON implements _JSONBase {
     this.number,
     this.boolean,
     this.empty,
-  }) : assert(object != null &&
-                array == null &&
-                string == null &&
-                number == null &&
-                boolean == null &&
-                empty == null ||
-            object == null &&
-                array != null &&
-                string == null &&
-                number == null &&
-                boolean == null &&
-                empty == null ||
-            object == null &&
-                array == null &&
-                string != null &&
-                number == null &&
-                boolean == null &&
-                empty == null ||
-            object == null &&
-                array == null &&
-                string == null &&
-                number != null &&
-                boolean == null &&
-                empty == null ||
-            object == null &&
-                array == null &&
-                string == null &&
-                number == null &&
-                boolean != null &&
-                empty == null ||
-            object == null &&
-                array == null &&
-                string == null &&
-                number == null &&
-                boolean == null &&
-                empty != null);
+  }) : assert(object != null && array == null && string == null && number == null && boolean == null && empty == null ||
+            object == null && array != null && string == null && number == null && boolean == null && empty == null ||
+            object == null && array == null && string != null && number == null && boolean == null && empty == null ||
+            object == null && array == null && string == null && number != null && boolean == null && empty == null ||
+            object == null && array == null && string == null && number == null && boolean != null && empty == null ||
+            object == null && array == null && string == null && number == null && boolean == null && empty != null);
   @override
   T iswitch<T>({
     @required T Function(Map<String, JSON>) object,
