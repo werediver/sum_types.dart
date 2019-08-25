@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/werediver/sum_types.dart.svg?branch=master)](https://travis-ci.org/werediver/sum_types.dart)
+
 ## sum_types
 
 A code generator enabling [sum-types](https://en.wikipedia.org/wiki/Sum_type) in Dart.
