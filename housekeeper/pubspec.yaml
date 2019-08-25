@@ -1,5 +1,5 @@
-name: hk
-description: A sample command-line application.
+name: housekeeper
+description: A housekeeping tool facilitating automation and CI needs around sum_types project.
 version: 0.1.0
 homepage: https://github.com/werediver/sum-types-dart
 author: Raman Fedaseyeu <raman.fedaseyeu@gmail.com>
