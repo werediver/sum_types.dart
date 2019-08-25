@@ -1,0 +1,15 @@
+name: hk
+description: A sample command-line application.
+version: 0.1.0
+homepage: https://github.com/werediver/sum-types-dart
+author: Raman Fedaseyeu <raman.fedaseyeu@gmail.com>
+publish_to: none
+
+environment:
+  sdk: '>=2.4.0 <3.0.0'
+
+dependencies:
+  path:
+
+dev_dependencies:
+  test: ^1.5.0
