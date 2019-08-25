@@ -17,6 +17,9 @@ void main(List<String> args) {
   if (success) {
     success = run("dartfmt", ["--line-length", "120", "--set-exit-if-changed", "-n", "."]).indicatesSuccess && success;
   }
+
+  print("\n  OVERALL: ${success ? "SUCCEEDED" : "FAILED"}");
+
   exit(success ? 0 : 1);
 }
 
