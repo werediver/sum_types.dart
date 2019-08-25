@@ -11,6 +11,14 @@ void main(List<String> args) {
   }
   if (success) {
     for (final pkgDir in pkgDirs) {
+      success =
+          run("pub", ["run", "dependency_validator", "--ignore", "sum_types_generator"], workingDirectory: pkgDir.path)
+                  .indicatesSuccess &&
+              success;
+    }
+  }
+  if (success) {
+    for (final pkgDir in pkgDirs) {
       success = run("dartanalyzer", ["."], workingDirectory: pkgDir.path).indicatesSuccess && success;
     }
   }
