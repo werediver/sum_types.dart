@@ -1,4 +1,3 @@
-A sample command-line application.
+## example
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+A `sum_types` and `sum_types_generator` usage example.
