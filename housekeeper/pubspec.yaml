@@ -14,3 +14,6 @@ dependencies:
 
 dev_dependencies:
   dependency_validator:
+
+executables:
+  housekeeper:

@@ -5,7 +5,7 @@ import 'package:path/path.dart' as p;
 
 void main(List<String> args) {
   var success = true;
-  final pkgDirs = findPkgDirs(Directory.current);
+  final pkgDirs = findPkgDirs(Directory.current, withSourceDirs: true);
   for (final pkgDir in pkgDirs) {
     success = run("pub", ["get"], workingDirectory: pkgDir.path).indicatesSuccess && success;
   }
@@ -23,11 +23,15 @@ void main(List<String> args) {
   exit(success ? 0 : 1);
 }
 
-Iterable<Directory> findPkgDirs(Directory root) {
+Iterable<Directory> findPkgDirs(Directory root, {bool withSourceDirs = false}) {
   const pubspec = "pubspec.yaml";
-  return root.listSync(recursive: true).expand((entity) => [
-        if (p.basename(entity.path) == pubspec) Directory(p.dirname(entity.path)),
-      ]);
+  bool subdirExists(String base, String sub) => Directory(p.join(base, sub)).existsSync();
+  return root
+      .listSync(recursive: true)
+      .expand((entity) => [
+            if (p.basename(entity.path) == pubspec) Directory(p.dirname(entity.path)),
+          ])
+      .where((pkgDir) => !withSourceDirs || subdirExists(pkgDir.path, "lib") || subdirExists(pkgDir.path, "bin"));
 }
 
 ExitCode run(String exe, List<String> args, {String workingDirectory}) {

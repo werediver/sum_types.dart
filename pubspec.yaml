@@ -1,0 +1,11 @@
+name: sum_types_umbrella
+description: An umbrella pseudo-package.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=2.4.0 <3.0.0'
+
+dev_dependencies:
+  housekeeper:
+    path: housekeeper
