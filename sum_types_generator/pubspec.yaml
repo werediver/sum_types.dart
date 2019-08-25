@@ -15,4 +15,5 @@ dependencies:
   source_gen:
 
 dev_dependencies:
+  dependency_validator:
   test: ^1.6.0

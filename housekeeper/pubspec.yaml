@@ -12,4 +12,5 @@ dependencies:
   path:
 
 dev_dependencies:
+  dependency_validator:
   test: ^1.5.0

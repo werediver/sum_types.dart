@@ -12,6 +12,7 @@ dependencies:
     path: ../sum_types
 
 dev_dependencies:
+  dependency_validator:
   sum_types_generator:
     path: ../sum_types_generator
   build_runner:
