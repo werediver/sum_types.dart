@@ -1,6 +1,6 @@
 name: sum_types
 description: Annotations for a code generator enabling sum-types in Dart.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/werediver/sum-types-dart
 author: Raman Fedaseyeu <raman.fedaseyeu@gmail.com>
 
