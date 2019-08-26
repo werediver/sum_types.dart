@@ -23,7 +23,7 @@ void main(List<String> args) {
     }
   }
   if (success) {
-    success = run("dartfmt", ["--line-length", "120", "--set-exit-if-changed", "-n", "."]).indicatesSuccess && success;
+    success = run("dartfmt", ["--set-exit-if-changed", "-n", "."]).indicatesSuccess && success;
   }
 
   print("\n  OVERALL: ${success ? "SUCCEEDED" : "FAILED"}");
@@ -45,7 +45,8 @@ Iterable<Directory> findPkgDirs(Directory root, {bool withSourceDirs = false}) {
 ExitCode run(String exe, List<String> args, {String workingDirectory}) {
   print([
     "\n",
-    if (workingDirectory != null) "  In ${quoteArg(p.relative(workingDirectory))}\n",
+    "  In ",
+    if (workingDirectory != null) "${quoteArg(p.relative(workingDirectory))}\n" else ".\n",
     "  Running $exe ${args.map(quoteArg).join(" ")}\n",
   ].join());
 
