@@ -76,7 +76,8 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
   throw Exception("A sum-type anchor must be a mix-in");
 }
 
-CaseSpec makeCaseSpec(DartObject obj, {@required String Function(DartType) typeName}) {
+CaseSpec makeCaseSpec(DartObject obj,
+    {@required String Function(DartType) typeName}) {
   final caseType = obj.type.typeArguments.first;
   return CaseSpec(
     name: obj.getField("name").toStringValue() ?? _defaultCaseName(caseType),
@@ -85,15 +86,20 @@ CaseSpec makeCaseSpec(DartObject obj, {@required String Function(DartType) typeN
   );
 }
 
-bool _caseTypeRequiresPayload(DartType type) => !(type.isDynamic || type.isVoid || type.isDartCoreNull);
+bool _caseTypeRequiresPayload(DartType type) =>
+    !(type.isDynamic || type.isVoid || type.isDartCoreNull);
 
-String _defaultCaseName(DartType type) => lowercaseLeadingID(undecoratedID(type.name));
+String _defaultCaseName(DartType type) =>
+    lowercaseLeadingID(undecoratedID(type.name));
 
-String _typeName(DartType type, {@required String Function(String) resolve}) => [
+String _typeName(DartType type, {@required String Function(String) resolve}) =>
+    [
       resolve(type.name),
       if (type is ParameterizedType && type.typeArguments.isNotEmpty) ...[
         "<",
-        type.typeArguments.map((type) => _typeName(type, resolve: resolve)).join(", "),
+        type.typeArguments
+            .map((type) => _typeName(type, resolve: resolve))
+            .join(", "),
         ">",
       ]
     ].join();

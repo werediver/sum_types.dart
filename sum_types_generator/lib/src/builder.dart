@@ -6,11 +6,13 @@ import 'package:sum_types/sum_types.dart' as annotations show SumType;
 import 'package:sum_types_generator/src/sum_type_spec.dart';
 import 'package:sum_types_generator/src/templates.dart';
 
-Builder sumTypesBuilder(BuilderOptions options) => SharedPartBuilder([SumTypesGenerator()], 'sum_types');
+Builder sumTypesBuilder(BuilderOptions options) =>
+    SharedPartBuilder([SumTypesGenerator()], 'sum_types');
 
 class SumTypesGenerator extends GeneratorForAnnotation<annotations.SumType> {
   @override
-  Object generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) =>
+  Object generateForAnnotatedElement(
+          Element element, ConstantReader annotation, BuildStep buildStep) =>
       generateSumType(makeSumTypeSpec(element, annotation));
 }
 
@@ -48,7 +50,10 @@ String generateSumType(SumTypeSpec spec) => [
                   "this._unsafe(",
                   caseSpec.name,
                   ":",
-                  if (caseSpec.requiresPayload) caseSpec.name else "const Unit()",
+                  if (caseSpec.requiresPayload)
+                    caseSpec.name
+                  else
+                    "const Unit()",
                   ")",
                 ].join(),
               ],
@@ -59,7 +64,8 @@ String generateSumType(SumTypeSpec spec) => [
             type: spec.sumTypeName,
             name: "_unsafe",
             namedParams: [
-              for (final caseSpec in spec.cases) param(name: "this.${caseSpec.name}"),
+              for (final caseSpec in spec.cases)
+                param(name: "this.${caseSpec.name}"),
             ],
             initializers: [
               [
@@ -68,7 +74,9 @@ String generateSumType(SumTypeSpec spec) => [
                   spec.cases,
                   spec.cases,
                   tuple: (CaseSpec expected, CaseSpec other) =>
-                      other == expected ? "${expected.name} != null" : "${other.name} == null",
+                      other == expected
+                          ? "${expected.name} != null"
+                          : "${other.name} == null",
                   row: (tuples) => tuples.join("&&"),
                   result: (rows) => rows.join("||"),
                 ),
@@ -90,7 +98,8 @@ String generateSumType(SumTypeSpec spec) => [
               "return",
               [
                 "other.runtimeType == runtimeType",
-                for (final caseSpec in spec.cases) "other.${caseSpec.name} == ${caseSpec.name}"
+                for (final caseSpec in spec.cases)
+                  "other.${caseSpec.name} == ${caseSpec.name}"
               ].join("&&"),
               ";",
             ],
@@ -102,7 +111,8 @@ String generateSumType(SumTypeSpec spec) => [
             name: "hashCode",
             body: [
               "var result = 17;",
-              for (final caseSpec in spec.cases) "result = 37 * result + ${caseSpec.name}.hashCode;",
+              for (final caseSpec in spec.cases)
+                "result = 37 * result + ${caseSpec.name}.hashCode;",
               "return result;",
             ],
           ),
@@ -138,7 +148,9 @@ String generateSumType(SumTypeSpec spec) => [
       ),
     ].join(" ");
 
-String exhaustiveSwitch({@required SumTypeSpec spec, @required bool implement}) => function(
+String exhaustiveSwitch(
+        {@required SumTypeSpec spec, @required bool implement}) =>
+    function(
       type: "T",
       name: "iswitch<T>",
       namedParams: [
@@ -165,7 +177,9 @@ String exhaustiveSwitch({@required SumTypeSpec spec, @required bool implement}) 
           : null,
     );
 
-String inexhaustiveSwitch({@required SumTypeSpec spec, @required bool implement}) => function(
+String inexhaustiveSwitch(
+        {@required SumTypeSpec spec, @required bool implement}) =>
+    function(
       type: "T",
       name: "iswitcho<T>",
       namedParams: [
@@ -187,7 +201,8 @@ String inexhaustiveSwitch({@required SumTypeSpec spec, @required bool implement}
           ? [
               "T _otherwise(Object _) => otherwise();",
               "return iswitch(",
-              ...spec.cases.map((c) => "${c.name}: ${c.name} ?? ${c.requiresPayload ? "_otherwise" : "otherwise"},"),
+              ...spec.cases.map((c) =>
+                  "${c.name}: ${c.name} ?? ${c.requiresPayload ? "_otherwise" : "otherwise"},"),
               ");",
             ]
           : null,

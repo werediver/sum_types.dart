@@ -11,7 +11,9 @@ String lowercaseLeadingID(String id) {
   final lowercasedLeadingLetter = leadingLetter.toLowerCase();
   return leadingLetter == lowercasedLeadingLetter
       ? id
-      : id.substring(0, offset) + lowercasedLeadingLetter + id.substring(offset + 1);
+      : id.substring(0, offset) +
+          lowercasedLeadingLetter +
+          id.substring(offset + 1);
 }
 
 int _idDecorationLen(String id) {

@@ -11,7 +11,7 @@ dependencies:
   meta: ^1.1.7
   sum_types: '>=0.1.0 <0.2.0'
   build: ^1.1.6
-  analyzer: ^0.37.1
+  analyzer: ^0.38.1
   source_gen: ^0.9.4
 
 dev_dependencies:
