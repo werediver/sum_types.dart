@@ -8,6 +8,11 @@ part 'example.g.dart';
   Case<_Nat>(name: "next"),
 ])
 mixin _Nat implements _NatBase {
+  Nat operator +(Nat other) => iswitch(
+        zero: () => other,
+        next: (next) => Nat.next(next + other),
+      );
+
   int toInt() => iswitch(
         zero: () => 0,
         next: (next) => 1 + next.toInt(),

@@ -1,3 +1,7 @@
+## 0.1.2
+
+- Integrate an example into the package.
+
 ## 0.1.1
 
 - Update a dependency: `analyzer: ^0.38.1`.

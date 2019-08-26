@@ -16,9 +16,3 @@ dev_dependencies:
   dependency_validator:
   sum_types_generator:
   build_runner:
-
-dependency_overrides:
-  sum_types:
-    path: ../sum_types
-  sum_types_generator:
-    path: ../sum_types_generator

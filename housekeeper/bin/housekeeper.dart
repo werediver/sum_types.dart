@@ -18,6 +18,8 @@ void main(List<String> args) {
                   [
                     "run",
                     "dependency_validator",
+                    "--exclude-dir",
+                    "example",
                     "--ignore",
                     "sum_types_generator"
                   ],
@@ -49,7 +51,7 @@ Iterable<Directory> findPkgDirs(Directory root, {bool withSourceDirs = false}) {
   bool subdirExists(String base, String sub) =>
       Directory(p.join(base, sub)).existsSync();
   return root
-      .listSync(recursive: true)
+      .listSync(recursive: true, followLinks: false)
       .expand((entity) => [
             if (p.basename(entity.path) == pubspec)
               Directory(p.dirname(entity.path)),

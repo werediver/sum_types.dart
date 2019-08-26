@@ -1,3 +1,7 @@
+## 0.1.2
+
+- Integrate an example into the package.
+
 ## 0.1.1
 
 - Include a change-log file.
