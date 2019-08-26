@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/werediver/sum_types.dart.svg?branch=master)](https://travis-ci.org/werediver/sum_types.dart)
+![Pub](https://img.shields.io/pub/v/sum_types_generator)
 
 ## sum_types
 
