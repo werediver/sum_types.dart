@@ -1,3 +1,8 @@
+## 0.1.2+2
+
+- Extend README.md.
+- Include analysis_options.yaml.
+
 ## 0.1.2+1
 
 - Relax dependency constraints to improve compatibility.
