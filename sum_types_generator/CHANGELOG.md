@@ -1,3 +1,7 @@
+## 0.1.2+1
+
+- Relax dependency constraints to improve compatibility.
+
 ## 0.1.2
 
 - Integrate an example into the package.
