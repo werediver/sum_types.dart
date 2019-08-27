@@ -1,3 +1,7 @@
+## 0.1.2+3
+
+- Attempt to not publish uncommited changes.
+
 ## 0.1.2+2
 
 - Extend README.md.
