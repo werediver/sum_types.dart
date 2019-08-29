@@ -1,9 +1,10 @@
 [![Build Status](https://travis-ci.org/werediver/sum_types.dart.svg?branch=master)](https://travis-ci.org/werediver/sum_types.dart)
-[![Pub](https://img.shields.io/pub/v/sum_types_generator)](https://pub.dev/packages/sum_types_generator)
+[![sum_types version](https://img.shields.io/pub/v/sum_types?label=sum_types)](https://pub.dev/packages/sum_types)
+[![sum_types_generator version](https://img.shields.io/pub/v/sum_types_generator?label=sum_types_generator)](https://pub.dev/packages/sum_types_generator)
 
-## sum_types
+## sum_types and sum_types_generator
 
-A code generator enabling [sum-types](https://en.wikipedia.org/wiki/Sum_type) in Dart.
+[sum_types](https://pub.dev/packages/sum_types) and [sum_types_generator](https://pub.dev/packages/sum_types_generator) packages together define a code generator enabling [sum-types](https://en.wikipedia.org/wiki/Sum_type) in Dart.
 
 ## Features
 
