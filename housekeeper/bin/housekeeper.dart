@@ -14,31 +14,50 @@ void main(List<String> args) {
   if (success) {
     for (final pkgDir in pkgDirs) {
       success = run(
-                  "pub",
-                  [
-                    "run",
-                    "dependency_validator",
-                    "--exclude-dir",
-                    "example",
-                    "--ignore",
-                    "sum_types_generator"
-                  ],
-                  workingDirectory: pkgDir.path)
-              .indicatesSuccess &&
+            "pub",
+            [
+              "run",
+              "dependency_validator",
+              "--exclude-dir",
+              "example",
+              "--ignore",
+              "sum_types_generator"
+            ],
+            workingDirectory: pkgDir.path,
+          ).indicatesSuccess &&
           success;
     }
+  }
+  if (success) {
+    success = run(
+          "pub",
+          [
+            "run",
+            "--enable-asserts",
+            "build_runner",
+            "build",
+            "--delete-conflicting-outputs",
+          ],
+          workingDirectory: "example",
+        ).indicatesSuccess &&
+        success;
   }
   if (success) {
     for (final pkgDir in pkgDirs) {
-      success = run("dartanalyzer", ["."], workingDirectory: pkgDir.path)
-              .indicatesSuccess &&
+      success = run(
+            "dartanalyzer",
+            ["."],
+            workingDirectory: pkgDir.path,
+          ).indicatesSuccess &&
           success;
     }
   }
   if (success) {
-    success =
-        run("dartfmt", ["--set-exit-if-changed", "-n", "."]).indicatesSuccess &&
-            success;
+    success = run(
+          "dartfmt",
+          ["--set-exit-if-changed", "-n", "."],
+        ).indicatesSuccess &&
+        success;
   }
 
   print("\n  OVERALL: ${success ? "SUCCEEDED" : "FAILED"}");
