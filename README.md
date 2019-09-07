@@ -9,19 +9,25 @@
 ## Features
 
 Core:
-- [x] Const-constructors
+- [x] Const case-constructors
 - [x] Extensible sum-types (`Nat.toInt()`)
-- [x] No-payload cases (`Case<void>(name: "zero")` → `Nat.zero()`)
-- [x] Default case-names (`Case<String>()` → `JSON.string("some")`)
 - [x] Recursive sum-types (`Case<_Nat>(name: "next")` → `Nat.next(Nat.zero())`)
 - [ ] Generic sum-types (`Either<Left, Right>`)
 - [x] Exhaustive in-line `iswitch`
 - [x] Inexhaustive in-line `iswitcho` (with `otherwise:` case)
 
+Sugar:
+- [x] No-payload cases (`Case<void>(name: "zero")` → `Nat.zero()`)
+- [x] Default case-names (`Case<String>()` → `JSON.string("some")`)
+
 Trivia:
 - [x] Equality test
 - [x] Hash function
 - [x] To string conversion
+
+Serialization-deserialization support through product-types interoperability:
+- [ ] Deserialization support (`NatRecord<Self>`, `Nat.load<T extends NatRecord<T>>(T rec)`)
+- [ ] Serialization support (`Nat.dump<T>(T Function({Unit zero, T next} make))`)
 
 ## Example
 
