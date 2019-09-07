@@ -27,6 +27,19 @@ class Nat with _Nat implements _NatBase {
     this.zero,
     this.next,
   }) : assert(zero != null && next == null || zero == null && next != null);
+  static Nat load<T extends NatRecordBase<T>>(
+    T rec,
+  ) {
+    if (!(rec.zero != null && rec.next == null ||
+        rec.zero == null && rec.next != null)) {
+      throw Exception("Cannot select a $Nat case given $rec");
+    }
+    return Nat._unsafe(
+      zero: rec.zero,
+      next: rec.next != null ? load(rec.next) : null,
+    );
+  }
+
   @override
   T iswitch<T>({
     @required T Function() zero,
@@ -84,6 +97,11 @@ class Nat with _Nat implements _NatBase {
   final Unit zero;
   @protected
   final Nat next;
+}
+
+abstract class NatRecordBase<Self> {
+  Unit get zero;
+  Self get next;
 }
 
 abstract class _JSONBase {
@@ -166,6 +184,57 @@ class JSON with _JSON implements _JSONBase {
                 number == null &&
                 boolean == null &&
                 empty != null);
+  static JSON load<T extends JSONRecordBase<T>>(
+    T rec,
+  ) {
+    if (!(rec.object != null &&
+            rec.array == null &&
+            rec.string == null &&
+            rec.number == null &&
+            rec.boolean == null &&
+            rec.empty == null ||
+        rec.object == null &&
+            rec.array != null &&
+            rec.string == null &&
+            rec.number == null &&
+            rec.boolean == null &&
+            rec.empty == null ||
+        rec.object == null &&
+            rec.array == null &&
+            rec.string != null &&
+            rec.number == null &&
+            rec.boolean == null &&
+            rec.empty == null ||
+        rec.object == null &&
+            rec.array == null &&
+            rec.string == null &&
+            rec.number != null &&
+            rec.boolean == null &&
+            rec.empty == null ||
+        rec.object == null &&
+            rec.array == null &&
+            rec.string == null &&
+            rec.number == null &&
+            rec.boolean != null &&
+            rec.empty == null ||
+        rec.object == null &&
+            rec.array == null &&
+            rec.string == null &&
+            rec.number == null &&
+            rec.boolean == null &&
+            rec.empty != null)) {
+      throw Exception("Cannot select a $JSON case given $rec");
+    }
+    return JSON._unsafe(
+      object: rec.object,
+      array: rec.array,
+      string: rec.string,
+      number: rec.number,
+      boolean: rec.boolean,
+      empty: rec.empty,
+    );
+  }
+
   @override
   T iswitch<T>({
     @required T Function(Map<String, JSON>) object,
@@ -263,4 +332,13 @@ class JSON with _JSON implements _JSONBase {
   final bool boolean;
   @protected
   final Unit empty;
+}
+
+abstract class JSONRecordBase<Self> {
+  Map<String, JSON> get object;
+  List<JSON> get array;
+  String get string;
+  double get number;
+  bool get boolean;
+  Unit get empty;
 }

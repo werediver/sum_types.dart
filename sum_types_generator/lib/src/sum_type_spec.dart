@@ -51,24 +51,31 @@ class CaseSpec {
 
 @immutable
 class CaseTypeSpec {
-  const CaseTypeSpec({@required this.name, @required this.requiresPayload});
+  const CaseTypeSpec({
+    @required this.name,
+    @required this.requiresPayload,
+    @required this.isDirectlyRecursive,
+  });
 
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
       other.name == name &&
-      other.requiresPayload == requiresPayload;
+      other.requiresPayload == requiresPayload &&
+      other.isDirectlyRecursive == isDirectlyRecursive;
 
   @override
   int get hashCode {
     var result = 17;
     result = 37 * result + name.hashCode;
     result = 37 * result + requiresPayload.hashCode;
+    result = 37 * result + isDirectlyRecursive.hashCode;
     return result;
   }
 
   final String name;
   final bool requiresPayload;
+  final bool isDirectlyRecursive;
 }
 
 SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
@@ -79,6 +86,7 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
     final sumTypeName = undecoratedID(element.name);
     CaseTypeSpec _resolveCaseTypeName(DartType type) => resolveCaseTypeName(
           declaredCaseType: type,
+          sumTypeName: sumTypeName,
           noPayloadTypeName: noPayloadTypeName,
           resolveTypeName: (type) => resolveTypeName(
             type,
@@ -90,7 +98,7 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
     return SumTypeSpec(
       anchorName: anchorName,
       ifaceName: "${anchorName}Base",
-      recordIfaceName: "${sumTypeName}Record",
+      recordIfaceName: "${sumTypeName}RecordBase",
       sumTypeName: sumTypeName,
       cases: annotation.objectValue.getField("cases").toListValue().map(
             (item) => makeCaseSpec(
@@ -122,6 +130,7 @@ String _defaultCaseName(String caseTypeName) =>
 
 CaseTypeSpec resolveCaseTypeName({
   @required DartType declaredCaseType,
+  @required String sumTypeName,
   @required String noPayloadTypeName,
   @required String Function(DartType) resolveTypeName,
 }) {
@@ -139,6 +148,7 @@ CaseTypeSpec resolveCaseTypeName({
   return CaseTypeSpec(
     name: resolvedTypeName,
     requiresPayload: requiresPayload,
+    isDirectlyRecursive: resolvedTypeName == sumTypeName,
   );
 }
 

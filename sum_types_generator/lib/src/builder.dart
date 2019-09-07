@@ -68,22 +68,10 @@ String generateSumType(SumTypeSpec spec) => [
                 param(name: "this.${caseSpec.name}"),
             ],
             initializers: [
-              [
-                "assert(",
-                cartprod2(
-                  spec.cases,
-                  spec.cases,
-                  tuple: (CaseSpec expected, CaseSpec other) =>
-                      other == expected
-                          ? "${expected.name} != null"
-                          : "${other.name} == null",
-                  row: (tuples) => tuples.join("&&"),
-                  result: (rows) => rows.join("||"),
-                ),
-                ")",
-              ].join(),
+              "assert(${invariant(spec.cases)})",
             ],
           ),
+          loadFromRecord(spec),
           "@override",
           exhaustiveSwitch(spec: spec, implement: true),
           "@override",
@@ -146,7 +134,54 @@ String generateSumType(SumTypeSpec spec) => [
           ],
         ],
       ),
+      // The read-only record-type interface
+      classDecl(
+        abstract: true,
+        name: "${spec.recordIfaceName}<Self>",
+        body: [
+          for (final caseSpec in spec.cases)
+            getter(
+              type: caseSpec.type.isDirectlyRecursive
+                  ? "Self"
+                  : caseSpec.type.name,
+              name: caseSpec.name,
+            ),
+        ],
+      ),
     ].join(" ");
+
+String invariant(Iterable<CaseSpec> cases, {String obj = ""}) => cartprod2(
+      cases,
+      cases,
+      tuple: (CaseSpec expected, CaseSpec other) => other == expected
+          ? "${obj.isNotEmpty ? "$obj." : ""}${expected.name} != null"
+          : "${obj.isNotEmpty ? "$obj." : ""}${other.name} == null",
+      row: (tuples) => tuples.join("&&"),
+      result: (rows) => rows.join("||"),
+    );
+
+String loadFromRecord(SumTypeSpec spec) => function(
+      isStatic: true,
+      type: spec.sumTypeName,
+      name: "load<T extends ${spec.recordIfaceName}<T>>",
+      posParams: [param(type: "T", name: "rec")],
+      body: [
+        "if (!(${invariant(spec.cases, obj: "rec")})) {",
+        "throw Exception(\"Cannot select a \$${spec.sumTypeName} case given \$rec\");",
+        "}",
+        "return ${spec.sumTypeName}._unsafe(",
+        ...spec.cases
+            .map((c) => [
+                  "${c.name}: ",
+                  if (c.type.isDirectlyRecursive)
+                    "rec.${c.name} != null ? load(rec.${c.name}) : null"
+                  else
+                    "rec.${c.name}",
+                ].join())
+            .map(appendComma),
+        ");",
+      ],
+    );
 
 String exhaustiveSwitch(
         {@required SumTypeSpec spec, @required bool implement}) =>

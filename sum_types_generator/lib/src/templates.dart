@@ -104,6 +104,7 @@ String constructor({
     ].join();
 
 String function({
+  bool isStatic = false,
   @required String type,
   @required String name,
   Iterable<String> posParams = const [],
@@ -111,6 +112,7 @@ String function({
   Iterable<String> body,
 }) =>
     [
+      if (isStatic) "static ",
       type,
       " ",
       name,
@@ -138,15 +140,18 @@ String param({String type, @required String name}) => [
 String getter({
   String type,
   @required String name,
-  @required Iterable<String> body,
+  Iterable<String> body,
 }) =>
     [
       type,
       " get ",
       name,
-      "{",
-      body.join(" "),
-      "}",
+      if (body != null) ...[
+        "{",
+        body.join(" "),
+        "}",
+      ] else
+        ";",
     ].join();
 
 String finalField({@required String type, @required String name}) => [
