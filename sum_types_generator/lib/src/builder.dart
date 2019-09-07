@@ -39,9 +39,9 @@ String generateSumType(SumTypeSpec spec) => [
               type: spec.sumTypeName,
               name: caseSpec.name,
               posParams: [
-                if (caseSpec.requiresPayload)
+                if (caseSpec.type.requiresPayload)
                   param(
-                    type: caseSpec.typeName,
+                    type: caseSpec.type.name,
                     name: caseSpec.name,
                   ),
               ],
@@ -50,10 +50,10 @@ String generateSumType(SumTypeSpec spec) => [
                   "this._unsafe(",
                   caseSpec.name,
                   ":",
-                  if (caseSpec.requiresPayload)
+                  if (caseSpec.type.requiresPayload)
                     caseSpec.name
                   else
-                    "const Unit()",
+                    spec.noPayloadTypeInstance,
                   ")",
                 ].join(),
               ],
@@ -126,7 +126,7 @@ String generateSumType(SumTypeSpec spec) => [
               ...spec.cases
                   .map((caseSpec) => [
                         "${caseSpec.name}: ",
-                        if (caseSpec.requiresPayload)
+                        if (caseSpec.type.requiresPayload)
                           "(value) => \"${caseSpec.name}(\$value)\""
                         else
                           "() => \"${caseSpec.name}()\"",
@@ -140,7 +140,7 @@ String generateSumType(SumTypeSpec spec) => [
           for (final caseSpec in spec.cases) ...[
             "@protected",
             finalField(
-              type: caseSpec.requiresPayload ? caseSpec.typeName : "Unit",
+              type: caseSpec.type.name,
               name: caseSpec.name,
             ),
           ],
@@ -158,7 +158,7 @@ String exhaustiveSwitch(
           param(
             type: [
               "@required T Function(",
-              if (caseSpec.requiresPayload) caseSpec.typeName,
+              if (caseSpec.type.requiresPayload) caseSpec.type.name,
               ")",
             ].join(),
             name: caseSpec.name,
@@ -169,7 +169,7 @@ String exhaustiveSwitch(
               for (final caseSpec in spec.cases) ...[
                 "if (this.${caseSpec.name} != null) {",
                 "return ${caseSpec.name}(",
-                if (caseSpec.requiresPayload) "this.${caseSpec.name}",
+                if (caseSpec.type.requiresPayload) "this.${caseSpec.name}",
                 "); } else"
               ],
               "{ throw StateError(\"an instance of \$${spec.sumTypeName} has no case selected\"); }",
@@ -187,7 +187,7 @@ String inexhaustiveSwitch(
           param(
             type: [
               "T Function(",
-              if (caseSpec.requiresPayload) caseSpec.typeName,
+              if (caseSpec.type.requiresPayload) caseSpec.type.name,
               ")",
             ].join(),
             name: caseSpec.name,
@@ -202,7 +202,7 @@ String inexhaustiveSwitch(
               "T _otherwise(Object _) => otherwise();",
               "return iswitch(",
               ...spec.cases.map((c) =>
-                  "${c.name}: ${c.name} ?? ${c.requiresPayload ? "_otherwise" : "otherwise"},"),
+                  "${c.name}: ${c.name} ?? ${c.type.requiresPayload ? "_otherwise" : "otherwise"},"),
               ");",
             ]
           : null,
