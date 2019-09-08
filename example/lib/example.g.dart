@@ -3,6 +3,35 @@
 part of 'example.dart';
 
 // **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+NatRecord _$NatRecordFromJson(Map<String, dynamic> json) {
+  return NatRecord(
+    zero: json['zero'] == null
+        ? null
+        : Unit.fromJson(json['zero'] as Map<String, dynamic>),
+    next: json['next'] == null
+        ? null
+        : NatRecord.fromJson(json['next'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$NatRecordToJson(NatRecord instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('zero', instance.zero);
+  writeNotNull('next', instance.next);
+  return val;
+}
+
+// **************************************************************************
 // SumTypesGenerator
 // **************************************************************************
 

@@ -11,8 +11,10 @@ environment:
 dependencies:
   meta:
   sum_types:
+  json_annotation:
 
 dev_dependencies:
   dependency_validator:
   sum_types_generator:
+  json_serializable:
   build_runner:

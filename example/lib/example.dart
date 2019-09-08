@@ -1,3 +1,4 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:sum_types/sum_types.dart';
 
@@ -17,6 +18,24 @@ mixin _Nat implements _NatBase {
         zero: () => 0,
         next: (next) => 1 + next.toInt(),
       );
+}
+
+@JsonSerializable(includeIfNull: false)
+class NatRecord implements NatRecordBase<NatRecord> {
+  const NatRecord({
+    this.zero,
+    this.next,
+  });
+
+  factory NatRecord.fromJson(Map<String, dynamic> json) =>
+      _$NatRecordFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NatRecordToJson(this);
+
+  @override
+  final Unit zero;
+  @override
+  final NatRecord next;
 }
 
 @SumType([
