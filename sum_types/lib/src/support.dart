@@ -4,6 +4,11 @@ import 'package:meta/meta.dart';
 class Unit {
   const Unit();
 
+  // ignore: avoid_unused_constructor_parameters
+  factory Unit.fromJson(Map<String, Object> _) => const Unit();
+
+  Map<String, Object> toJson() => {};
+
   @override
   bool operator ==(dynamic other) => other.runtimeType == runtimeType;
 
