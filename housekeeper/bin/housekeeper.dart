@@ -21,7 +21,10 @@ void main(List<String> args) {
               "--exclude-dir",
               "example",
               "--ignore",
-              "sum_types_generator"
+              [
+                "sum_types_generator",
+                "json_serializable",
+              ].join(","),
             ],
             workingDirectory: pkgDir.path,
           ).indicatesSuccess &&
