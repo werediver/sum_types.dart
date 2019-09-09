@@ -72,6 +72,7 @@ String generateSumType(SumTypeSpec spec) => [
             ],
           ),
           loadFromRecord(spec),
+          dumpToRecord(spec),
           "@override",
           exhaustiveSwitch(spec: spec, implement: true),
           "@override",
@@ -178,6 +179,48 @@ String loadFromRecord(SumTypeSpec spec) => function(
                   else
                     "rec.${c.name}",
                 ].join())
+            .map(appendComma),
+        ");",
+      ],
+    );
+
+String dumpToRecord(SumTypeSpec spec) => function(
+      type: "T",
+      name: "dump<T>",
+      posParams: [
+        param(
+          type: [
+            "T Function({",
+            ...spec.cases
+                .map(
+                  (c) => param(
+                    type: c.type.isDirectlyRecursive ? "T" : c.type.name,
+                    name: c.name,
+                  ),
+                )
+                .map(appendComma),
+            "})",
+          ].join(),
+          name: "make",
+        ),
+      ],
+      body: [
+        "return iswitch(",
+        ...spec.cases
+            .map(
+              (c) => [
+                "${c.name}: (",
+                if (c.type.requiresPayload) c.name,
+                ") => make(${c.name}:",
+                if (c.type.isDirectlyRecursive)
+                  "${c.name}.dump(make)"
+                else if (c.type.requiresPayload)
+                  c.name
+                else
+                  spec.noPayloadTypeInstance,
+                ")",
+              ].join(),
+            )
             .map(appendComma),
         ");",
       ],

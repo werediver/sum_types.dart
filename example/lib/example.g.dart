@@ -69,6 +69,19 @@ class Nat with _Nat implements _NatBase {
     );
   }
 
+  T dump<T>(
+    T Function({
+      Unit zero,
+      T next,
+    })
+        make,
+  ) {
+    return iswitch(
+      zero: () => make(zero: const Unit()),
+      next: (next) => make(next: next.dump(make)),
+    );
+  }
+
   @override
   T iswitch<T>({
     @required T Function() zero,
@@ -261,6 +274,27 @@ class JSON with _JSON implements _JSONBase {
       number: rec.number,
       boolean: rec.boolean,
       empty: rec.empty,
+    );
+  }
+
+  T dump<T>(
+    T Function({
+      Map<String, JSON> object,
+      List<JSON> array,
+      String string,
+      double number,
+      bool boolean,
+      Unit empty,
+    })
+        make,
+  ) {
+    return iswitch(
+      object: (object) => make(object: object),
+      array: (array) => make(array: array),
+      string: (string) => make(string: string),
+      number: (number) => make(number: number),
+      boolean: (boolean) => make(boolean: boolean),
+      empty: () => make(empty: const Unit()),
     );
   }
 
