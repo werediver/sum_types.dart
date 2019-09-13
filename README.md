@@ -26,8 +26,8 @@ Trivia:
 - [x] To string conversion
 
 Serialization-deserialization support through product-types interoperability:
-- [ ] Deserialization support (`NatRecord<Self>`, `Nat.load<T extends NatRecord<T>>(T rec)`)
-- [ ] Serialization support (`Nat.dump<T>(T Function({Unit zero, T next} make))`)
+- [x] Deserialization support (`NatRecord<Self>`, `Nat.load<T extends NatRecord<T>>(T rec)`)
+- [x] Serialization support (`Nat.dump<T>(T Function({Unit zero, T next} make))`)
 
 ## Example
 
