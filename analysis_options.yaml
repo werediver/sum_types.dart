@@ -9,7 +9,7 @@ linter:
     #- always_specify_types # Utilize type inference
     - annotate_overrides
     #- avoid_annotating_with_dynamic # `dynamic` is bad and implicit `dynamic` is worse
-    - avoid_as
+    #- avoid_as # Right, just avoid it
     - avoid_bool_literals_in_conditional_expressions
     - avoid_catches_without_on_clauses
     - avoid_catching_errors
