@@ -1,3 +1,7 @@
+## 0.1.3
+
+- Support serialization-deserialization of the generated sum-types through interoperability with user-defined product-types (`XRecordBase<Self>`, `X.dump(·)`, `X.load(·)`)
+
 ## 0.1.2+4
 
 - Update README.md and the package description.
