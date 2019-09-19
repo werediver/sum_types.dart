@@ -35,6 +35,117 @@ Map<String, dynamic> _$NatRecordToJson(NatRecord instance) {
 // SumTypesGenerator
 // **************************************************************************
 
+abstract class _MaybeNatBase {
+  T iswitch<T>({
+    @required T Function(Nat) some,
+    @required T Function() none,
+  });
+  T iswitcho<T>({
+    T Function(Nat) some,
+    T Function() none,
+    @required T Function() otherwise,
+  });
+}
+
+class MaybeNat with _MaybeNat implements _MaybeNatBase {
+  const MaybeNat.some(
+    Nat some,
+  ) : this._unsafe(some: some);
+  const MaybeNat.none() : this._unsafe(none: const Unit());
+  const MaybeNat._unsafe({
+    this.some,
+    this.none,
+  }) : assert(some != null && none == null || some == null && none != null);
+  static MaybeNat load<T extends MaybeNatRecordBase<T>>(
+    T rec,
+  ) {
+    if (!(rec.some != null && rec.none == null ||
+        rec.some == null && rec.none != null)) {
+      throw Exception("Cannot select a $MaybeNat case given $rec");
+    }
+    return MaybeNat._unsafe(
+      some: rec.some,
+      none: rec.none,
+    );
+  }
+
+  T dump<T>(
+    T Function({
+      Nat some,
+      Unit none,
+    })
+        make,
+  ) {
+    return iswitch(
+      some: (some) => make(some: some),
+      none: () => make(none: const Unit()),
+    );
+  }
+
+  @override
+  T iswitch<T>({
+    @required T Function(Nat) some,
+    @required T Function() none,
+  }) {
+    if (this.some != null) {
+      return some(this.some);
+    } else if (this.none != null) {
+      return none();
+    } else {
+      throw StateError("an instance of $MaybeNat has no case selected");
+    }
+  }
+
+  @override
+  T iswitcho<T>({
+    T Function(Nat) some,
+    T Function() none,
+    @required T Function() otherwise,
+  }) {
+    T _otherwise(Object _) => otherwise();
+    return iswitch(
+      some: some ?? _otherwise,
+      none: none ?? otherwise,
+    );
+  }
+
+  @override
+  bool operator ==(
+    dynamic other,
+  ) {
+    return other.runtimeType == runtimeType &&
+        other.some == some &&
+        other.none == none;
+  }
+
+  @override
+  int get hashCode {
+    var result = 17;
+    result = 37 * result + some.hashCode;
+    result = 37 * result + none.hashCode;
+    return result;
+  }
+
+  @override
+  String toString() {
+    final ctor = iswitch(
+      some: (value) => "some($value)",
+      none: () => "none()",
+    );
+    return "$MaybeNat.$ctor";
+  }
+
+  @protected
+  final Nat some;
+  @protected
+  final Unit none;
+}
+
+abstract class MaybeNatRecordBase<Self> {
+  Nat get some;
+  Unit get none;
+}
+
 abstract class _NatBase {
   T iswitch<T>({
     @required T Function() zero,

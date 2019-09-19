@@ -3,6 +3,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:sum_types/sum_types.dart';
 import 'package:sum_types_generator/src/templates.dart';
 
 @immutable
@@ -79,19 +80,28 @@ class CaseTypeSpec {
 }
 
 SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
-  const noPayloadTypeName = "Unit";
+  final noPayloadTypeName = "$Unit";
+
+  String anchorNameToSumTypeName(String anchorName) =>
+      undecoratedID(anchorName);
 
   if (element is ClassElement && element.isMixin) {
     final anchorName = element.name;
-    final sumTypeName = undecoratedID(element.name);
-    CaseTypeSpec _resolveCaseTypeName(DartType type) => resolveCaseTypeName(
+    final sumTypeName = anchorNameToSumTypeName(element.name);
+    CaseTypeSpec __resolveCaseTypeName(DartType type) => _resolveCaseTypeName(
           declaredCaseType: type,
           sumTypeName: sumTypeName,
           noPayloadTypeName: noPayloadTypeName,
-          resolveTypeName: (type) => resolveTypeName(
+          resolveTypeName: (type) => _resolveTypeName(
             type,
-            resolve: (typeName) =>
-                typeName == anchorName ? sumTypeName : typeName,
+            name: (type) {
+              if (type.name == anchorName) {
+                return sumTypeName;
+              } else if (_isSumTypeAnchor(type)) {
+                return anchorNameToSumTypeName(type.name);
+              }
+              return type.name;
+            },
           ),
         );
 
@@ -103,7 +113,7 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
       cases: annotation.objectValue.getField("cases").toListValue().map(
             (item) => makeCaseSpec(
               item,
-              resolveTypeName: _resolveCaseTypeName,
+              resolveTypeName: __resolveCaseTypeName,
             ),
           ),
       noPayloadTypeInstance: "const $noPayloadTypeName()",
@@ -128,7 +138,7 @@ CaseSpec makeCaseSpec(
 String _defaultCaseName(String caseTypeName) =>
     lowercaseLeadingID(undecoratedID(caseTypeName));
 
-CaseTypeSpec resolveCaseTypeName({
+CaseTypeSpec _resolveCaseTypeName({
   @required DartType declaredCaseType,
   @required String sumTypeName,
   @required String noPayloadTypeName,
@@ -151,12 +161,12 @@ CaseTypeSpec resolveCaseTypeName({
   );
 }
 
-String resolveTypeName(
+String _resolveTypeName(
   DartType type, {
-  @required String Function(String) resolve,
+  @required String Function(DartType) name,
 }) {
   String _resolveTypeName(DartType type) => [
-        resolve(type.name),
+        name(type),
         if (type is ParameterizedType && type.typeArguments.isNotEmpty) ...[
           "<",
           type.typeArguments.map(_resolveTypeName).join(", "),
@@ -165,3 +175,12 @@ String resolveTypeName(
       ].join();
   return _resolveTypeName(type);
 }
+
+bool _isSumTypeAnchor(DartType type) => type.element.metadata.any((annotation) {
+      final annotationElement = annotation.element;
+      if (annotationElement is ConstructorElement) {
+        final annotationClassElement = annotationElement.enclosingElement;
+        return annotationClassElement.name == "$SumType";
+      }
+      return false;
+    });

@@ -5,6 +5,12 @@ import 'package:sum_types/sum_types.dart';
 part 'example.g.dart';
 
 @SumType([
+  Case<_Nat>(name: "some"),
+  Case<void>(name: "none"),
+])
+mixin _MaybeNat implements _MaybeNatBase {}
+
+@SumType([
   Case<void>(name: "zero"),
   Case<_Nat>(name: "next"),
 ])
