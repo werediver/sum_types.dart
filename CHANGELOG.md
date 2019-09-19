@@ -1,3 +1,7 @@
+## 0.1.4
+
+- Allow nesting sum-types (by mentioning anchors).
+
 ## 0.1.3
 
 - Support serialization-deserialization of the generated sum-types through interoperability with user-defined product-types (`XRecordBase<Self>`, `X.dump(·)`, `X.load(·)`)

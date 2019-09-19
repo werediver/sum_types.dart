@@ -9,8 +9,9 @@
 ## Features
 
 Core:
-- [x] Const case-constructors
+- [x] Const case-constructors (`const Nat.zero()`)
 - [x] Extensible sum-types (`Nat.toInt()`)
+- [x] Nested sum-types
 - [x] Recursive sum-types (`Case<_Nat>(name: "next")` → `Nat.next(Nat.zero())`)
 - [ ] Generic sum-types (`Either<Left, Right>`)
 - [x] Exhaustive in-line `iswitch`
