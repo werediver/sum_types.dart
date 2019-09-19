@@ -136,9 +136,8 @@ CaseTypeSpec resolveCaseTypeName({
 }) {
   String resolvedTypeName;
   bool requiresPayload;
-  if (declaredCaseType.isVoid ||
-      declaredCaseType.isDartCoreNull ||
-      declaredCaseType.isDynamic) {
+
+  if (declaredCaseType.isVoid) {
     resolvedTypeName = noPayloadTypeName;
     requiresPayload = false;
   } else {
