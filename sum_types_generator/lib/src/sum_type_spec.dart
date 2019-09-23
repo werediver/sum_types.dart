@@ -94,14 +94,9 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
           noPayloadTypeName: noPayloadTypeName,
           resolveTypeName: (type) => _resolveTypeName(
             type,
-            name: (type) {
-              if (type.name == anchorName) {
-                return sumTypeName;
-              } else if (_isSumTypeAnchor(type)) {
-                return anchorNameToSumTypeName(type.name);
-              }
-              return type.name;
-            },
+            name: (type) => _isSumTypeAnchor(type)
+                ? anchorNameToSumTypeName(type.name)
+                : type.name,
           ),
         );
 
