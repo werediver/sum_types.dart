@@ -1,6 +1,7 @@
 ## 0.1.4
 
 - Allow nesting sum-types (by mentioning anchors).
+- Stop using `dynamic` and `Null` as empty-case markers, use only `void`.
 
 ## 0.1.3
 
