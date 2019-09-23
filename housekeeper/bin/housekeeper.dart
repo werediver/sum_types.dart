@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:meta/meta.dart';
+import 'package:housekeeper/run.dart';
 import 'package:path/path.dart' as p;
 
 void main(List<String> args) {
@@ -82,53 +82,4 @@ Iterable<Directory> findPkgDirs(Directory root, {bool withSourceDirs = false}) {
           !withSourceDirs ||
           subdirExists(pkgDir.path, "lib") ||
           subdirExists(pkgDir.path, "bin"));
-}
-
-ExitCode run(String exe, List<String> args, {String workingDirectory}) {
-  print([
-    "\n",
-    "  In ",
-    if (workingDirectory != null)
-      "${quoteArg(p.relative(workingDirectory))}\n"
-    else
-      ".\n",
-    "  Running $exe ${args.map(quoteArg).join(" ")}\n",
-  ].join());
-
-  final runResult =
-      Process.runSync(exe, args, workingDirectory: workingDirectory);
-
-  final runResultStdOut = cast<String>(runResult.stdout, otherwise: () => "");
-  final runResultStdErr = cast<String>(runResult.stderr, otherwise: () => "");
-  stdout.write(runResultStdOut);
-  stderr.write(runResultStdErr);
-
-  final exitCode = ExitCode(runResult.exitCode);
-
-  print([
-    if (runResultStdOut.isNotEmpty || runResultStdErr.isNotEmpty) "\n",
-    if (exitCode.indicatesSuccess)
-      "  SUCCEEDED"
-    else
-      "  FAILED with exit code $exitCode",
-  ].join());
-
-  return exitCode;
-}
-
-String quoteArg(String arg) => arg.contains(" ") ? "\"$arg\"" : arg;
-
-T cast<T>(dynamic value, {@required T Function() otherwise}) =>
-    value is T ? value : otherwise();
-
-@immutable
-class ExitCode {
-  const ExitCode(this.value);
-
-  @override
-  String toString() => "$value";
-
-  bool get indicatesSuccess => value == 0;
-
-  final int value;
 }
