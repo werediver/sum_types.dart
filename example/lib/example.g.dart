@@ -35,15 +35,126 @@ Map<String, dynamic> _$NatRecordToJson(NatRecord instance) {
 // SumTypesGenerator
 // **************************************************************************
 
-abstract class _MaybeNatBase {
-  T iswitch<T>({
-    @required T Function(Nat) some,
-    @required T Function() none,
+abstract class _OptionalBase<T> {
+  __T iswitch<__T>({
+    @required __T Function(T) some,
+    @required __T Function() none,
   });
-  T iswitcho<T>({
-    T Function(Nat) some,
-    T Function() none,
-    @required T Function() otherwise,
+  __T iswitcho<__T>({
+    __T Function(T) some,
+    __T Function() none,
+    @required __T Function() otherwise,
+  });
+}
+
+class Optional<T> with _Optional<T> implements _OptionalBase<T> {
+  const Optional.some(
+    T some,
+  ) : this._unsafe(some: some);
+  const Optional.none() : this._unsafe(none: const Unit());
+  const Optional._unsafe({
+    this.some,
+    this.none,
+  }) : assert(some != null && none == null || some == null && none != null);
+  static Optional<T> load<__T extends OptionalRecordBase<__T, T>, T>(
+    __T rec,
+  ) {
+    if (!(rec.some != null && rec.none == null ||
+        rec.some == null && rec.none != null)) {
+      throw Exception("Cannot select a $Optional case given $rec");
+    }
+    return Optional._unsafe(
+      some: rec.some,
+      none: rec.none,
+    );
+  }
+
+  __T dump<__T>(
+    __T Function({
+      T some,
+      Unit none,
+    })
+        make,
+  ) {
+    return iswitch(
+      some: (some) => make(some: some),
+      none: () => make(none: const Unit()),
+    );
+  }
+
+  @override
+  __T iswitch<__T>({
+    @required __T Function(T) some,
+    @required __T Function() none,
+  }) {
+    if (this.some != null) {
+      return some(this.some);
+    } else if (this.none != null) {
+      return none();
+    } else {
+      throw StateError("an instance of $Optional has no case selected");
+    }
+  }
+
+  @override
+  __T iswitcho<__T>({
+    __T Function(T) some,
+    __T Function() none,
+    @required __T Function() otherwise,
+  }) {
+    __T _otherwise(Object _) => otherwise();
+    return iswitch(
+      some: some ?? _otherwise,
+      none: none ?? otherwise,
+    );
+  }
+
+  @override
+  bool operator ==(
+    dynamic other,
+  ) {
+    return other.runtimeType == runtimeType &&
+        other.some == some &&
+        other.none == none;
+  }
+
+  @override
+  int get hashCode {
+    var result = 17;
+    result = 37 * result + some.hashCode;
+    result = 37 * result + none.hashCode;
+    return result;
+  }
+
+  @override
+  String toString() {
+    final ctor = iswitch(
+      some: (value) => "some($value)",
+      none: () => "none()",
+    );
+    return "$Optional.$ctor";
+  }
+
+  @protected
+  final T some;
+  @protected
+  final Unit none;
+}
+
+abstract class OptionalRecordBase<Self, T> {
+  T get some;
+  Unit get none;
+}
+
+abstract class _MaybeNatBase {
+  __T iswitch<__T>({
+    @required __T Function(Nat) some,
+    @required __T Function() none,
+  });
+  __T iswitcho<__T>({
+    __T Function(Nat) some,
+    __T Function() none,
+    @required __T Function() otherwise,
   });
 }
 
@@ -56,8 +167,8 @@ class MaybeNat with _MaybeNat implements _MaybeNatBase {
     this.some,
     this.none,
   }) : assert(some != null && none == null || some == null && none != null);
-  static MaybeNat load<T extends MaybeNatRecordBase<T>>(
-    T rec,
+  static MaybeNat load<__T extends MaybeNatRecordBase<__T>>(
+    __T rec,
   ) {
     if (!(rec.some != null && rec.none == null ||
         rec.some == null && rec.none != null)) {
@@ -69,8 +180,8 @@ class MaybeNat with _MaybeNat implements _MaybeNatBase {
     );
   }
 
-  T dump<T>(
-    T Function({
+  __T dump<__T>(
+    __T Function({
       Nat some,
       Unit none,
     })
@@ -83,9 +194,9 @@ class MaybeNat with _MaybeNat implements _MaybeNatBase {
   }
 
   @override
-  T iswitch<T>({
-    @required T Function(Nat) some,
-    @required T Function() none,
+  __T iswitch<__T>({
+    @required __T Function(Nat) some,
+    @required __T Function() none,
   }) {
     if (this.some != null) {
       return some(this.some);
@@ -97,12 +208,12 @@ class MaybeNat with _MaybeNat implements _MaybeNatBase {
   }
 
   @override
-  T iswitcho<T>({
-    T Function(Nat) some,
-    T Function() none,
-    @required T Function() otherwise,
+  __T iswitcho<__T>({
+    __T Function(Nat) some,
+    __T Function() none,
+    @required __T Function() otherwise,
   }) {
-    T _otherwise(Object _) => otherwise();
+    __T _otherwise(Object _) => otherwise();
     return iswitch(
       some: some ?? _otherwise,
       none: none ?? otherwise,
@@ -147,14 +258,14 @@ abstract class MaybeNatRecordBase<Self> {
 }
 
 abstract class _NatBase {
-  T iswitch<T>({
-    @required T Function() zero,
-    @required T Function(Nat) next,
+  __T iswitch<__T>({
+    @required __T Function() zero,
+    @required __T Function(Nat) next,
   });
-  T iswitcho<T>({
-    T Function() zero,
-    T Function(Nat) next,
-    @required T Function() otherwise,
+  __T iswitcho<__T>({
+    __T Function() zero,
+    __T Function(Nat) next,
+    @required __T Function() otherwise,
   });
 }
 
@@ -167,8 +278,8 @@ class Nat with _Nat implements _NatBase {
     this.zero,
     this.next,
   }) : assert(zero != null && next == null || zero == null && next != null);
-  static Nat load<T extends NatRecordBase<T>>(
-    T rec,
+  static Nat load<__T extends NatRecordBase<__T>>(
+    __T rec,
   ) {
     if (!(rec.zero != null && rec.next == null ||
         rec.zero == null && rec.next != null)) {
@@ -180,10 +291,10 @@ class Nat with _Nat implements _NatBase {
     );
   }
 
-  T dump<T>(
-    T Function({
+  __T dump<__T>(
+    __T Function({
       Unit zero,
-      T next,
+      __T next,
     })
         make,
   ) {
@@ -194,9 +305,9 @@ class Nat with _Nat implements _NatBase {
   }
 
   @override
-  T iswitch<T>({
-    @required T Function() zero,
-    @required T Function(Nat) next,
+  __T iswitch<__T>({
+    @required __T Function() zero,
+    @required __T Function(Nat) next,
   }) {
     if (this.zero != null) {
       return zero();
@@ -208,12 +319,12 @@ class Nat with _Nat implements _NatBase {
   }
 
   @override
-  T iswitcho<T>({
-    T Function() zero,
-    T Function(Nat) next,
-    @required T Function() otherwise,
+  __T iswitcho<__T>({
+    __T Function() zero,
+    __T Function(Nat) next,
+    @required __T Function() otherwise,
   }) {
-    T _otherwise(Object _) => otherwise();
+    __T _otherwise(Object _) => otherwise();
     return iswitch(
       zero: zero ?? otherwise,
       next: next ?? _otherwise,
@@ -258,22 +369,22 @@ abstract class NatRecordBase<Self> {
 }
 
 abstract class _JSONBase {
-  T iswitch<T>({
-    @required T Function(Map<String, JSON>) object,
-    @required T Function(List<JSON>) array,
-    @required T Function(String) string,
-    @required T Function(double) number,
-    @required T Function(bool) boolean,
-    @required T Function() empty,
+  __T iswitch<__T>({
+    @required __T Function(Map<String, JSON>) object,
+    @required __T Function(List<JSON>) array,
+    @required __T Function(String) string,
+    @required __T Function(double) number,
+    @required __T Function(bool) boolean,
+    @required __T Function() empty,
   });
-  T iswitcho<T>({
-    T Function(Map<String, JSON>) object,
-    T Function(List<JSON>) array,
-    T Function(String) string,
-    T Function(double) number,
-    T Function(bool) boolean,
-    T Function() empty,
-    @required T Function() otherwise,
+  __T iswitcho<__T>({
+    __T Function(Map<String, JSON>) object,
+    __T Function(List<JSON>) array,
+    __T Function(String) string,
+    __T Function(double) number,
+    __T Function(bool) boolean,
+    __T Function() empty,
+    @required __T Function() otherwise,
   });
 }
 
@@ -337,8 +448,8 @@ class JSON with _JSON implements _JSONBase {
                 number == null &&
                 boolean == null &&
                 empty != null);
-  static JSON load<T extends JSONRecordBase<T>>(
-    T rec,
+  static JSON load<__T extends JSONRecordBase<__T>>(
+    __T rec,
   ) {
     if (!(rec.object != null &&
             rec.array == null &&
@@ -388,8 +499,8 @@ class JSON with _JSON implements _JSONBase {
     );
   }
 
-  T dump<T>(
-    T Function({
+  __T dump<__T>(
+    __T Function({
       Map<String, JSON> object,
       List<JSON> array,
       String string,
@@ -410,13 +521,13 @@ class JSON with _JSON implements _JSONBase {
   }
 
   @override
-  T iswitch<T>({
-    @required T Function(Map<String, JSON>) object,
-    @required T Function(List<JSON>) array,
-    @required T Function(String) string,
-    @required T Function(double) number,
-    @required T Function(bool) boolean,
-    @required T Function() empty,
+  __T iswitch<__T>({
+    @required __T Function(Map<String, JSON>) object,
+    @required __T Function(List<JSON>) array,
+    @required __T Function(String) string,
+    @required __T Function(double) number,
+    @required __T Function(bool) boolean,
+    @required __T Function() empty,
   }) {
     if (this.object != null) {
       return object(this.object);
@@ -436,16 +547,16 @@ class JSON with _JSON implements _JSONBase {
   }
 
   @override
-  T iswitcho<T>({
-    T Function(Map<String, JSON>) object,
-    T Function(List<JSON>) array,
-    T Function(String) string,
-    T Function(double) number,
-    T Function(bool) boolean,
-    T Function() empty,
-    @required T Function() otherwise,
+  __T iswitcho<__T>({
+    __T Function(Map<String, JSON>) object,
+    __T Function(List<JSON>) array,
+    __T Function(String) string,
+    __T Function(double) number,
+    __T Function(bool) boolean,
+    __T Function() empty,
+    @required __T Function() otherwise,
   }) {
-    T _otherwise(Object _) => otherwise();
+    __T _otherwise(Object _) => otherwise();
     return iswitch(
       object: object ?? _otherwise,
       array: array ?? _otherwise,

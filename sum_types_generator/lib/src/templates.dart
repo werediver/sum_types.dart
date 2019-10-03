@@ -1,8 +1,11 @@
 import 'package:meta/meta.dart';
 
 String undecoratedID(String id) {
-  final offset = _idDecorationLen(id);
-  return offset == 0 ? id : id.substring(offset);
+  final start = _idDecorationLen(id);
+  final end = id.indexOf("<", start);
+  return start == 0 && end < 0
+      ? id
+      : id.substring(start, end >= 0 ? end : null);
 }
 
 String lowercaseLeadingID(String id) {
@@ -28,6 +31,7 @@ int _idDecorationLen(String id) {
 String classDecl({
   bool abstract = false,
   @required String name,
+  Iterable<String> typeParams = const [],
   String superclass,
   Iterable<String> mixins = const [],
   Iterable<String> ifaces = const [],
@@ -37,6 +41,11 @@ String classDecl({
       if (abstract) "abstract",
       "class",
       name,
+      if (typeParams.isNotEmpty) ...[
+        "<",
+        typeParams.join(","),
+        ">",
+      ],
       if (superclass != null) ...[
         "extends",
         superclass,
@@ -107,6 +116,7 @@ String function({
   bool isStatic = false,
   @required String type,
   @required String name,
+  Iterable<String> typeParams = const [],
   Iterable<String> posParams = const [],
   Iterable<String> namedParams = const [],
   Iterable<String> body,
@@ -116,6 +126,12 @@ String function({
       type,
       " ",
       name,
+      if (typeParams.isNotEmpty)
+        [
+          "<",
+          typeParams.join(","),
+          ">",
+        ].join(),
       "(",
       ...posParams.map(appendComma),
       if (namedParams.isNotEmpty) ...[

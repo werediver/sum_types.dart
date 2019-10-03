@@ -4,12 +4,28 @@ import 'package:meta/meta.dart';
 class SumType {
   const SumType(this.cases);
 
-  final List<Case> cases;
+  final List<CaseBase> cases;
 }
 
 @immutable
-class Case<T> {
+abstract class CaseBase {
+  String get name;
+}
+
+@immutable
+class Case<T> implements CaseBase {
   const Case({this.name});
 
+  @override
+  final String name;
+}
+
+@immutable
+class CaseT implements CaseBase {
+  const CaseT(this.typeParameterIndex, {this.name});
+
+  final int typeParameterIndex;
+
+  @override
   final String name;
 }

@@ -13,6 +13,7 @@ class SumTypeSpec {
     @required this.ifaceName,
     @required this.recordIfaceName,
     @required this.sumTypeName,
+    @required this.typeParams,
     @required this.cases,
     @required this.noPayloadTypeInstance,
   });
@@ -21,6 +22,7 @@ class SumTypeSpec {
   final String ifaceName;
   final String recordIfaceName;
   final String sumTypeName;
+  final Iterable<String> typeParams;
   final Iterable<CaseSpec> cases;
   final String noPayloadTypeInstance;
 }
@@ -105,10 +107,16 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
       ifaceName: "${anchorName}Base",
       recordIfaceName: "${sumTypeName}RecordBase",
       sumTypeName: sumTypeName,
+      typeParams: element.typeParameters.map((e) => e.name),
       cases: annotation.objectValue.getField("cases").toListValue().map(
             (item) => makeCaseSpec(
               item,
               resolveTypeName: __resolveCaseTypeName,
+              resolveTypeParam: (index) => CaseTypeSpec(
+                name: element.typeParameters[index].name,
+                requiresPayload: true,
+                isDirectlyRecursive: false,
+              ),
             ),
           ),
       noPayloadTypeInstance: "const $noPayloadTypeName()",
@@ -120,13 +128,23 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
 CaseSpec makeCaseSpec(
   DartObject obj, {
   @required CaseTypeSpec Function(DartType) resolveTypeName,
+  @required CaseTypeSpec Function(int) resolveTypeParam,
 }) {
-  final declaredCaseType = obj.type.typeArguments.first;
-  final typeName = resolveTypeName(declaredCaseType);
+  final caseTypeSpec = () {
+    if (obj.type.name == undecoratedID("$Case")) {
+      final declaredCaseType = obj.type.typeArguments.first;
+      return resolveTypeName(declaredCaseType);
+    } else if (obj.type.name == undecoratedID("$CaseT")) {
+      final index = obj.getField("typeParameterIndex").toIntValue();
+      return resolveTypeParam(index);
+    }
+    throw Exception("Case-annotation ${obj.type.name} is not supported");
+  }();
+
   return CaseSpec(
     name: obj.getField("name").toStringValue() ??
-        _defaultCaseName(declaredCaseType.name),
-    type: typeName,
+        _defaultCaseName(caseTypeSpec.name),
+    type: caseTypeSpec,
   );
 }
 
