@@ -1,3 +1,17 @@
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  errors:
+    avoid_relative_lib_imports: warning
+    implementation_imports: warning
+    missing_required_param: error
+    prefer_final_fields: warning
+    prefer_final_in_for_each: warning
+    prefer_final_locals: warning
+  exclude:
+    - "**.g.dart"
+
 # Find the rules description at https://dart-lang.github.io/linter/lints/
 # Find the full list of rules at http://dart-lang.github.io/linter/lints/options/options.html
 linter:
@@ -149,17 +163,3 @@ linter:
     - use_to_and_as_if_applicable
     - valid_regexps
     - void_checks
-
-analyzer:
-  strong-mode:
-    implicit-casts: false
-    implicit-dynamic: false
-  errors:
-    avoid_relative_lib_imports: warning
-    implementation_imports: warning
-    missing_required_param: error
-    prefer_final_fields: warning
-    prefer_final_in_for_each: warning
-    prefer_final_locals: warning
-  exclude:
-    - "**.g.dart"

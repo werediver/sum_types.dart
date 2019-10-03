@@ -1,7 +1,7 @@
 name: example
-description: An example package using a code generator enabling sum-types in Dart.
+description: An example application using a code generator enabling sum-types in Dart.
 version: 0.1.0
-homepage: https://github.com/werediver/sum-types-dart
+homepage: https://github.com/werediver/sum-types.dart
 author: Raman Fedaseyeu <raman.fedaseyeu@gmail.com>
 publish_to: none
 
