@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:sum_types_generator/src/common_spec.dart';
 
 String undecoratedID(String id) {
   final start = _idDecorationLen(id);
@@ -31,7 +32,7 @@ int _idDecorationLen(String id) {
 String classDecl({
   bool abstract = false,
   @required String name,
-  Iterable<String> typeParams = const [],
+  Iterable<TypeParamSpec> typeParams = const [],
   String superclass,
   Iterable<String> mixins = const [],
   Iterable<String> ifaces = const [],
@@ -41,11 +42,7 @@ String classDecl({
       if (abstract) "abstract",
       "class",
       name,
-      if (typeParams.isNotEmpty) ...[
-        "<",
-        typeParams.join(","),
-        ">",
-      ],
+      parametrize(typeParams),
       if (superclass != null) ...[
         "extends",
         superclass,
@@ -65,6 +62,7 @@ String classDecl({
 
 String mixinDecl({
   @required String name,
+  Iterable<TypeParamSpec> typeParams = const [],
   Iterable<String> superclassConstraints = const [],
   Iterable<String> ifaces = const [],
   Iterable<String> body = const [],
@@ -72,6 +70,7 @@ String mixinDecl({
     [
       "mixin",
       name,
+      parametrize(typeParams),
       if (superclassConstraints.isNotEmpty) ...[
         "on",
         superclassConstraints.join(", "),
@@ -116,7 +115,7 @@ String function({
   bool isStatic = false,
   @required String type,
   @required String name,
-  Iterable<String> typeParams = const [],
+  Iterable<TypeParamSpec> typeParams = const [],
   Iterable<String> posParams = const [],
   Iterable<String> namedParams = const [],
   Iterable<String> body,
@@ -126,12 +125,7 @@ String function({
       type,
       " ",
       name,
-      if (typeParams.isNotEmpty)
-        [
-          "<",
-          typeParams.join(","),
-          ">",
-        ].join(),
+      parametrize(typeParams),
       "(",
       ...posParams.map(appendComma),
       if (namedParams.isNotEmpty) ...[
@@ -176,6 +170,27 @@ String finalField({@required String type, @required String name}) => [
       name,
       ";",
     ].join(" ");
+
+String parametrize(Iterable<TypeParamSpec> typeParams) => typeParams.isNotEmpty
+    ? [
+        "<",
+        typeParams
+            .map((typeParam) => [
+                  typeParam.name,
+                  if (typeParam.bound != null) " extends ${typeParam.bound}",
+                ].join())
+            .join(","),
+        ">",
+      ].join()
+    : "";
+
+String specialize(Iterable<String> typeArgs) => typeArgs.isNotEmpty
+    ? [
+        "<",
+        typeArgs.join(","),
+        ">",
+      ].join()
+    : "";
 
 String appendComma(String s) => "$s,";
 

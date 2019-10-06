@@ -4,6 +4,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:sum_types/sum_types.dart';
+import 'package:sum_types_generator/src/common_spec.dart';
 import 'package:sum_types_generator/src/templates.dart';
 
 @immutable
@@ -22,7 +23,7 @@ class SumTypeSpec {
   final String ifaceName;
   final String recordIfaceName;
   final String sumTypeName;
-  final Iterable<String> typeParams;
+  final Iterable<TypeParamSpec> typeParams;
   final Iterable<CaseSpec> cases;
   final String noPayloadTypeInstance;
 }
@@ -107,7 +108,12 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
       ifaceName: "${anchorName}Base",
       recordIfaceName: "${sumTypeName}RecordBase",
       sumTypeName: sumTypeName,
-      typeParams: element.typeParameters.map((e) => e.name),
+      typeParams: element.typeParameters.map(
+        (e) => TypeParamSpec(
+          name: e.name,
+          bound: e.bound?.name,
+        ),
+      ),
       cases: annotation.objectValue.getField("cases").toListValue().map(
             (item) => makeCaseSpec(
               item,

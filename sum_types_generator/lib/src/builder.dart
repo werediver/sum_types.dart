@@ -3,6 +3,7 @@ import 'package:build/build.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:sum_types/sum_types.dart' as annotations show SumType;
+import 'package:sum_types_generator/src/common_spec.dart';
 import 'package:sum_types_generator/src/sum_type_spec.dart';
 import 'package:sum_types_generator/src/templates.dart';
 
@@ -34,21 +35,13 @@ String generateSumType(SumTypeSpec spec) => [
         mixins: [
           [
             spec.anchorName,
-            if (spec.typeParams.isNotEmpty) ...[
-              "<",
-              spec.typeParams.join(","),
-              ">"
-            ],
+            specialize(spec.typeParams.map((typeParam) => typeParam.name)),
           ].join()
         ],
         ifaces: [
           [
             spec.ifaceName,
-            if (spec.typeParams.isNotEmpty) ...[
-              "<",
-              spec.typeParams.join(","),
-              ">"
-            ],
+            specialize(spec.typeParams.map((typeParam) => typeParam.name)),
           ].join()
         ],
         body: [
@@ -160,7 +153,7 @@ String generateSumType(SumTypeSpec spec) => [
         abstract: true,
         name: spec.recordIfaceName,
         typeParams: [
-          "Self",
+          const TypeParamSpec(name: "Self"),
           ...spec.typeParams,
         ],
         body: [
@@ -189,21 +182,20 @@ String loadFromRecord(SumTypeSpec spec) => function(
       isStatic: true,
       type: [
         spec.sumTypeName,
-        if (spec.typeParams.isNotEmpty) ...[
-          "<",
-          spec.typeParams.join(","),
-          ">",
-        ],
+        specialize(spec.typeParams.map((typeParam) => typeParam.name)),
       ].join(),
       name: "load",
       typeParams: [
-        [
-          "__T extends ",
-          spec.recordIfaceName,
-          "<",
-          ["__T", ...spec.typeParams].join(","),
-          ">"
-        ].join(),
+        TypeParamSpec(
+          name: "__T",
+          bound: [
+            spec.recordIfaceName,
+            specialize([
+              "__T",
+              ...spec.typeParams.map((typeParam) => typeParam.name),
+            ]),
+          ].join(),
+        ),
         ...spec.typeParams,
       ],
       posParams: [param(type: "__T", name: "rec")],
@@ -228,7 +220,7 @@ String loadFromRecord(SumTypeSpec spec) => function(
 String dumpToRecord(SumTypeSpec spec) => function(
       type: "__T",
       name: "dump",
-      typeParams: ["__T"],
+      typeParams: [const TypeParamSpec(name: "__T")],
       posParams: [
         param(
           type: [
@@ -275,7 +267,7 @@ String exhaustiveSwitch({
     function(
       type: "__T",
       name: "iswitch",
-      typeParams: ["__T"],
+      typeParams: [const TypeParamSpec(name: "__T")],
       namedParams: [
         for (final caseSpec in spec.cases)
           param(
@@ -307,7 +299,7 @@ String inexhaustiveSwitch({
     function(
       type: "__T",
       name: "iswitcho",
-      typeParams: ["__T"],
+      typeParams: [const TypeParamSpec(name: "__T")],
       namedParams: [
         for (final caseSpec in spec.cases)
           param(
