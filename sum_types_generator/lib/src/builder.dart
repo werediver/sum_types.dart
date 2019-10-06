@@ -142,7 +142,7 @@ String generateSumType(SumTypeSpec spec) => [
                       ].join())
                   .map(appendComma),
               ");",
-              "return \"\$${spec.sumTypeName}.\$ctor\";",
+              "return \"\$runtimeType.\$ctor\";",
             ],
           ),
           // Fields
