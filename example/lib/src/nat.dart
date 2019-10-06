@@ -2,19 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:sum_types/sum_types.dart';
 
-part 'example.g.dart';
-
-@SumType([
-  CaseT(0, name: "some"),
-  Case<void>(name: "none"),
-])
-mixin _Optional<T> implements _OptionalBase<T> {}
-
-@SumType([
-  Case<_Nat>(name: "some"),
-  Case<void>(name: "none"),
-])
-mixin _MaybeNat implements _MaybeNatBase {}
+part 'nat.g.dart';
 
 @SumType([
   Case<void>(name: "zero"),
@@ -39,7 +27,7 @@ class NatRecord implements NatRecordBase<NatRecord> {
     this.next,
   });
 
-  factory NatRecord.fromJson(Map<String, dynamic> json) =>
+  factory NatRecord.fromJson(Map<String, Object> json) =>
       _$NatRecordFromJson(json);
 
   Map<String, dynamic> toJson() => _$NatRecordToJson(this);
@@ -51,11 +39,7 @@ class NatRecord implements NatRecordBase<NatRecord> {
 }
 
 @SumType([
-  Case<Map<String, _JSON>>(name: "object"),
-  Case<List<_JSON>>(name: "array"),
-  Case<String>(),
-  Case<double>(name: "number"),
-  Case<bool>(name: "boolean"),
-  Case<void>(name: "empty"),
+  Case<_Nat>(name: "some"),
+  Case<void>(name: "none"),
 ])
-mixin _JSON {}
+mixin _OptionalNat implements _OptionalNatBase {}

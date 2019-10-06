@@ -1,10 +1,12 @@
 import 'dart:convert';
 
-import 'package:example/example.dart';
+import 'package:example/src/nat.dart';
+import 'package:example/src/optional.dart';
 
 void main(List<String> arguments) {
   showcaseNatBasic();
   showcaseNatJson();
+  showcaseOptionalJson();
 }
 
 void showcaseNatBasic() {
@@ -32,5 +34,27 @@ void showcaseNatJson() {
   final recoveredRec = NatRecord.fromJson(jsonObject as Map<String, Object>);
   final recoveredNat = Nat.load(recoveredRec);
   print("Recovered object: $recoveredNat");
+  print("");
+}
+
+void showcaseOptionalJson() {
+  print("## $Optional serialization-deserialization\n");
+
+  const originalOpt = Optional.some(1);
+  print("Original object: $originalOpt");
+
+  final originalRec = originalOpt
+      .dump(({some, none}) => OptionalRecord(some: some, none: none));
+  print("Record: $originalOpt");
+
+  final jsonString = const JsonEncoder().convert(originalRec);
+  print("JSON string: $jsonString");
+
+  final Object jsonObject = const JsonDecoder().convert(jsonString);
+  final recoveredRec =
+      OptionalRecord<int>.fromJson(jsonObject as Map<String, Object>);
+
+  final recoveredOpt = Optional.load<OptionalRecord<int>, int>(recoveredRec);
+  print("Recovered object: $recoveredOpt");
   print("");
 }

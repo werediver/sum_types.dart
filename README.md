@@ -32,7 +32,7 @@ Serialization-deserialization support through product-types interoperability:
 
 ## Example
 
-In [example/lib/example.dart](example/lib/example.dart) you can find a couple of sum-type declarations and in [example/lib/example.g.dart](example/lib/example.g.dart) the generated code.
+In [example/lib/src/*.dart](example/lib/src) you can find a few sum-type declarations and in [example/lib/*.g.dart](example/lib/src) the generated code.
 
 This one models the natural numbers (with zero):
 
