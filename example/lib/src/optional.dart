@@ -5,6 +5,7 @@ import 'package:sum_types/sum_types.dart';
 part 'optional.g.dart';
 
 @SumType([
+  // In a `CaseT` case-annotation reference a sum-type type-parameter by index.
   CaseT(0, name: "some"),
   Case<void>(name: "none"),
 ])

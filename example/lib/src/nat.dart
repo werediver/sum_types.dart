@@ -39,6 +39,8 @@ class NatRecord implements NatRecordBase<NatRecord> {
 }
 
 @SumType([
+  // In a case-annotation reference another sum-type defined in the same package
+  // by its mix-in name.
   Case<_Nat>(name: "some"),
   Case<void>(name: "none"),
 ])

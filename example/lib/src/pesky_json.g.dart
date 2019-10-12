@@ -1,23 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'json.dart';
+part of 'pesky_json.dart';
 
 // **************************************************************************
 // SumTypesGenerator
 // **************************************************************************
 
-abstract class _JSONBase {
+abstract class _PeskyJsonBase {
   __T iswitch<__T>({
-    @required __T Function(Map<String, JSON>) object,
-    @required __T Function(List<JSON>) array,
+    @required __T Function(Map<String, PeskyJson>) object,
+    @required __T Function(Iterable<PeskyJson>) array,
     @required __T Function(String) string,
     @required __T Function(double) number,
     @required __T Function(bool) boolean,
     @required __T Function() empty,
   });
   __T iswitcho<__T>({
-    __T Function(Map<String, JSON>) object,
-    __T Function(List<JSON>) array,
+    __T Function(Map<String, PeskyJson>) object,
+    __T Function(Iterable<PeskyJson>) array,
     __T Function(String) string,
     __T Function(double) number,
     __T Function(bool) boolean,
@@ -26,24 +26,24 @@ abstract class _JSONBase {
   });
 }
 
-class JSON with _JSON implements _JSONBase {
-  const JSON.object(
-    Map<String, JSON> object,
+class PeskyJson with _PeskyJson implements _PeskyJsonBase {
+  const PeskyJson.object(
+    Map<String, PeskyJson> object,
   ) : this._unsafe(object: object);
-  const JSON.array(
-    List<JSON> array,
+  const PeskyJson.array(
+    Iterable<PeskyJson> array,
   ) : this._unsafe(array: array);
-  const JSON.string(
+  const PeskyJson.string(
     String string,
   ) : this._unsafe(string: string);
-  const JSON.number(
+  const PeskyJson.number(
     double number,
   ) : this._unsafe(number: number);
-  const JSON.boolean(
+  const PeskyJson.boolean(
     bool boolean,
   ) : this._unsafe(boolean: boolean);
-  const JSON.empty() : this._unsafe(empty: const Unit());
-  const JSON._unsafe({
+  const PeskyJson.empty() : this._unsafe(empty: const Unit());
+  const PeskyJson._unsafe({
     this.object,
     this.array,
     this.string,
@@ -86,7 +86,7 @@ class JSON with _JSON implements _JSONBase {
                 number == null &&
                 boolean == null &&
                 empty != null);
-  static JSON load<__T extends JSONRecordBase<__T>>(
+  static PeskyJson load<__T extends PeskyJsonRecordBase<__T>>(
     __T rec,
   ) {
     if (!(rec.object != null &&
@@ -125,9 +125,9 @@ class JSON with _JSON implements _JSONBase {
             rec.number == null &&
             rec.boolean == null &&
             rec.empty != null)) {
-      throw Exception("Cannot select a $JSON case given $rec");
+      throw Exception("Cannot select a $PeskyJson case given $rec");
     }
-    return JSON._unsafe(
+    return PeskyJson._unsafe(
       object: rec.object,
       array: rec.array,
       string: rec.string,
@@ -139,8 +139,8 @@ class JSON with _JSON implements _JSONBase {
 
   __T dump<__T>(
     __T Function({
-      Map<String, JSON> object,
-      List<JSON> array,
+      Map<String, PeskyJson> object,
+      Iterable<PeskyJson> array,
       String string,
       double number,
       bool boolean,
@@ -160,8 +160,8 @@ class JSON with _JSON implements _JSONBase {
 
   @override
   __T iswitch<__T>({
-    @required __T Function(Map<String, JSON>) object,
-    @required __T Function(List<JSON>) array,
+    @required __T Function(Map<String, PeskyJson>) object,
+    @required __T Function(Iterable<PeskyJson>) array,
     @required __T Function(String) string,
     @required __T Function(double) number,
     @required __T Function(bool) boolean,
@@ -180,14 +180,14 @@ class JSON with _JSON implements _JSONBase {
     } else if (this.empty != null) {
       return empty();
     } else {
-      throw StateError("an instance of $JSON has no case selected");
+      throw StateError("an instance of $PeskyJson has no case selected");
     }
   }
 
   @override
   __T iswitcho<__T>({
-    __T Function(Map<String, JSON>) object,
-    __T Function(List<JSON>) array,
+    __T Function(Map<String, PeskyJson>) object,
+    __T Function(Iterable<PeskyJson>) array,
     __T Function(String) string,
     __T Function(double) number,
     __T Function(bool) boolean,
@@ -244,9 +244,9 @@ class JSON with _JSON implements _JSONBase {
   }
 
   @protected
-  final Map<String, JSON> object;
+  final Map<String, PeskyJson> object;
   @protected
-  final List<JSON> array;
+  final Iterable<PeskyJson> array;
   @protected
   final String string;
   @protected
@@ -257,9 +257,9 @@ class JSON with _JSON implements _JSONBase {
   final Unit empty;
 }
 
-abstract class JSONRecordBase<Self> {
-  Map<String, JSON> get object;
-  List<JSON> get array;
+abstract class PeskyJsonRecordBase<Self> {
+  Map<String, PeskyJson> get object;
+  Iterable<PeskyJson> get array;
   String get string;
   double get number;
   bool get boolean;
