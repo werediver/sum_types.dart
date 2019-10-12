@@ -1,3 +1,8 @@
+## 0.1.5
+
+- Support generic sum-types.
+- Restructure the example project.
+
 ## 0.1.4
 
 - Allow nesting sum-types (by mentioning anchors).
