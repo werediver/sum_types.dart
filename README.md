@@ -13,6 +13,9 @@ In [example/lib/src/](example/lib/src) you can find a few sum-type declarations 
 This one models the natural numbers (with zero):
 
 ```dart
+import 'package:meta/meta.dart';
+import 'package:sum_types/sum_types.dart';
+
 @SumType([
   Case<void>(name: "zero"),
   Case<_Nat>(name: "next"),
