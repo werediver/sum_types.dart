@@ -18,64 +18,16 @@ class SumTypesGenerator extends GeneratorForAnnotation<annotations.SumType> {
 }
 
 String generateSumType(SumTypeSpec spec) => [
-      // The sum-type interface
+      // The sum-type base class
       classDecl(
         abstract: true,
-        name: spec.ifaceName,
+        name: spec.sumTypeBaseName,
         typeParams: spec.typeParams,
         body: [
-          exhaustiveSwitch(spec: spec, implement: false),
-          inexhaustiveSwitch(spec: spec, implement: false),
-        ],
-      ),
-      // The sum-type
-      classDecl(
-        name: spec.sumTypeName,
-        typeParams: spec.typeParams,
-        mixins: [
-          [
-            spec.anchorName,
-            specialize(spec.typeParams.map((typeParam) => typeParam.name)),
-          ].join()
-        ],
-        ifaces: [
-          [
-            spec.ifaceName,
-            specialize(spec.typeParams.map((typeParam) => typeParam.name)),
-          ].join()
-        ],
-        body: [
-          // Case constructors
-          for (final caseSpec in spec.cases)
-            constructor(
-              isConst: true,
-              type: spec.sumTypeName,
-              name: caseSpec.name,
-              posParams: [
-                if (caseSpec.type.requiresPayload)
-                  param(
-                    type: caseSpec.type.name,
-                    name: caseSpec.name,
-                  ),
-              ],
-              initializers: [
-                [
-                  "this._unsafe(",
-                  caseSpec.name,
-                  ":",
-                  if (caseSpec.type.requiresPayload)
-                    caseSpec.name
-                  else
-                    spec.noPayloadTypeInstance,
-                  ")",
-                ].join(),
-              ],
-            ),
           // The unsafe constructor
           constructor(
             isConst: true,
-            type: spec.sumTypeName,
-            name: "_unsafe",
+            type: spec.sumTypeBaseName,
             namedParams: [
               for (final caseSpec in spec.cases)
                 param(name: "this.${caseSpec.name}"),
@@ -86,9 +38,7 @@ String generateSumType(SumTypeSpec spec) => [
           ),
           loadFromRecord(spec),
           dumpToRecord(spec),
-          "@override",
           exhaustiveSwitch(spec: spec, implement: true),
-          "@override",
           inexhaustiveSwitch(spec: spec, implement: true),
           // Equality test
           "@override",
@@ -187,48 +137,55 @@ String loadFromRecord(SumTypeSpec spec) => function(
       name: "load",
       typeParams: [
         TypeParamSpec(
-          name: "__T",
+          name: "\$T",
           bound: [
             spec.recordIfaceName,
             specialize([
-              "__T",
+              "\$T",
               ...spec.typeParams.map((typeParam) => typeParam.name),
             ]),
           ].join(),
         ),
         ...spec.typeParams,
       ],
-      posParams: [param(type: "__T", name: "rec")],
+      posParams: [param(type: "\$T", name: "rec")],
       body: [
-        "if (!(${invariant(spec.cases, obj: "rec")})) {",
-        "throw Exception(\"Cannot select a \$${spec.sumTypeName} case given \$rec\");",
-        "}",
-        "return ${spec.sumTypeName}._unsafe(",
-        ...spec.cases
-            .map((c) => [
-                  "${c.name}: ",
-                  if (c.type.isDirectlyRecursive)
-                    "rec.${c.name} != null ? load(rec.${c.name}) : null"
-                  else
-                    "rec.${c.name}",
-                ].join())
-            .map(appendComma),
-        ");",
+        spec.cases.map((expected) {
+          final cond = spec.cases
+              .map((other) => other == expected
+                  ? "rec.${expected.name} != null"
+                  : "rec.${other.name} == null")
+              .join("&&");
+          return [
+            "if ($cond) {",
+            "return ",
+            if (!expected.type.isDirectlyRecursive && spec.typeParams.isEmpty)
+              "const ",
+            "${spec.sumTypeName}${specialize(spec.typeParams.map((param) => param.name))}.${expected.name}(",
+            if (expected.type.isDirectlyRecursive)
+              "load(rec.${expected.name})"
+            else if (expected.type.requiresPayload)
+              "rec.${expected.name}",
+            ");",
+            "} else ",
+          ].join();
+        }).join(),
+        "{ throw Exception(\"Cannot select a \$${spec.sumTypeName} case given \$rec\"); }",
       ],
     );
 
 String dumpToRecord(SumTypeSpec spec) => function(
-      type: "__T",
+      type: "\$T",
       name: "dump",
-      typeParams: [const TypeParamSpec(name: "__T")],
+      typeParams: [const TypeParamSpec(name: "\$T")],
       posParams: [
         param(
           type: [
-            "__T Function({",
+            "\$T Function({",
             ...spec.cases
                 .map(
                   (c) => param(
-                    type: c.type.isDirectlyRecursive ? "__T" : c.type.name,
+                    type: c.type.isDirectlyRecursive ? "\$T" : c.type.name,
                     name: c.name,
                   ),
                 )
@@ -265,14 +222,14 @@ String exhaustiveSwitch({
   @required bool implement,
 }) =>
     function(
-      type: "__T",
+      type: "\$T",
       name: "iswitch",
-      typeParams: [const TypeParamSpec(name: "__T")],
+      typeParams: [const TypeParamSpec(name: "\$T")],
       namedParams: [
         for (final caseSpec in spec.cases)
           param(
             type: [
-              "@required __T Function(",
+              "@required \$T Function(",
               if (caseSpec.type.requiresPayload) caseSpec.type.name,
               ")",
             ].join(),
@@ -297,27 +254,27 @@ String inexhaustiveSwitch({
   @required bool implement,
 }) =>
     function(
-      type: "__T",
+      type: "\$T",
       name: "iswitcho",
-      typeParams: [const TypeParamSpec(name: "__T")],
+      typeParams: [const TypeParamSpec(name: "\$T")],
       namedParams: [
         for (final caseSpec in spec.cases)
           param(
             type: [
-              "__T Function(",
+              "\$T Function(",
               if (caseSpec.type.requiresPayload) caseSpec.type.name,
               ")",
             ].join(),
             name: caseSpec.name,
           ),
         param(
-          type: "@required __T Function()",
+          type: "@required \$T Function()",
           name: "otherwise",
         ),
       ],
       body: implement
           ? [
-              "__T _otherwise(Object _) => otherwise();",
+              "\$T _otherwise(Object _) => otherwise();",
               "return iswitch(",
               ...spec.cases.map((c) =>
                   "${c.name}: ${c.name} ?? ${c.type.requiresPayload ? "_otherwise" : "otherwise"},"),

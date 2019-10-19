@@ -1,28 +1,24 @@
-import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:sum_types/sum_types.dart';
 import 'package:sum_types_generator/src/common_spec.dart';
-import 'package:sum_types_generator/src/templates.dart';
 
 @immutable
 class SumTypeSpec {
   const SumTypeSpec({
-    @required this.anchorName,
-    @required this.ifaceName,
-    @required this.recordIfaceName,
     @required this.sumTypeName,
+    @required this.sumTypeBaseName,
+    @required this.recordIfaceName,
     @required this.typeParams,
     @required this.cases,
     @required this.noPayloadTypeInstance,
   });
 
-  final String anchorName;
-  final String ifaceName;
-  final String recordIfaceName;
   final String sumTypeName;
+  final String sumTypeBaseName;
+  final String recordIfaceName;
   final Iterable<TypeParamSpec> typeParams;
   final Iterable<CaseSpec> cases;
   final String noPayloadTypeInstance;
@@ -84,106 +80,78 @@ class CaseTypeSpec {
 
 SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
   final noPayloadTypeName = "$Unit";
+  final noPayloadTypeInstance = "const $noPayloadTypeName()";
 
-  String anchorNameToSumTypeName(String anchorName) =>
-      undecoratedID(anchorName);
-
-  if (element is ClassElement && element.isMixin) {
-    final anchorName = element.name;
-    final sumTypeName = anchorNameToSumTypeName(element.name);
-    CaseTypeSpec __resolveCaseTypeName(DartType type) => _resolveCaseTypeName(
+  if (element is ClassElement && !element.isMixin && !element.isEnum) {
+    final sumTypeName = element.name;
+    CaseTypeSpec __makeCaseTypeSpec(DartType type) => _makeCaseTypeSpec(
           declaredCaseType: type,
           sumTypeName: sumTypeName,
           noPayloadTypeName: noPayloadTypeName,
-          resolveTypeName: (type) => _resolveTypeName(
-            type,
-            name: (type) => _isSumTypeAnchor(type)
-                ? anchorNameToSumTypeName(type.name)
-                : type.name,
-          ),
         );
+    CaseSpec __makeCaseSpec(ConstructorElement ctor) =>
+        _makeCaseSpec(ctor, makeCaseTypeSpec: __makeCaseTypeSpec);
 
     return SumTypeSpec(
-      anchorName: anchorName,
-      ifaceName: "${anchorName}Base",
-      recordIfaceName: "${sumTypeName}RecordBase",
       sumTypeName: sumTypeName,
+      sumTypeBaseName: "_\$$sumTypeName",
+      recordIfaceName: "${sumTypeName}RecordBase",
       typeParams: element.typeParameters.map(
         (e) => TypeParamSpec(
           name: e.name,
           bound: e.bound?.name,
         ),
       ),
-      cases: annotation.objectValue.getField("cases").toListValue().map(
-            (item) => makeCaseSpec(
-              item,
-              resolveTypeName: __resolveCaseTypeName,
-              resolveTypeParam: (index) => CaseTypeSpec(
-                name: element.typeParameters[index].name,
-                requiresPayload: true,
-                isDirectlyRecursive: false,
-              ),
-            ),
-          ),
-      noPayloadTypeInstance: "const $noPayloadTypeName()",
+      cases: element.constructors
+          .where((ctor) => ctor.name?.isNotEmpty == true && !ctor.isFactory)
+          .map(__makeCaseSpec),
+      noPayloadTypeInstance: noPayloadTypeInstance,
     );
   }
-  throw Exception("A sum-type anchor must be a mix-in");
+  throw Exception("A sum-type anchor must be a class");
 }
 
-CaseSpec makeCaseSpec(
-  DartObject obj, {
-  @required CaseTypeSpec Function(DartType) resolveTypeName,
-  @required CaseTypeSpec Function(int) resolveTypeParam,
+CaseSpec _makeCaseSpec(
+  ConstructorElement ctor, {
+  @required CaseTypeSpec Function(DartType) makeCaseTypeSpec,
 }) {
-  final caseTypeSpec = () {
-    if (obj.type.name == undecoratedID("$Case")) {
-      final declaredCaseType = obj.type.typeArguments.first;
-      return resolveTypeName(declaredCaseType);
-    } else if (obj.type.name == undecoratedID("$CaseT")) {
-      final index = obj.getField("typeParameterIndex").toIntValue();
-      return resolveTypeParam(index);
-    }
-    throw Exception("Case-annotation ${obj.type.name} is not supported");
-  }();
-
-  return CaseSpec(
-    name: obj.getField("name").toStringValue() ??
-        _defaultCaseName(caseTypeSpec.name),
-    type: caseTypeSpec,
+  if (ctor.parameters.length <= 1) {
+    final caseType =
+        ctor.parameters.firstWhere((_) => true, orElse: () => null)?.type;
+    return CaseSpec(name: ctor.name, type: makeCaseTypeSpec(caseType));
+  }
+  throw Exception(
+    "Case-constructor ${ctor.name} shall have at most one parameter",
   );
 }
 
-String _defaultCaseName(String caseTypeName) =>
-    lowercaseLeadingID(undecoratedID(caseTypeName));
-
-CaseTypeSpec _resolveCaseTypeName({
+CaseTypeSpec _makeCaseTypeSpec({
   @required DartType declaredCaseType,
   @required String sumTypeName,
   @required String noPayloadTypeName,
-  @required String Function(DartType) resolveTypeName,
 }) {
-  String resolvedTypeName;
-  bool requiresPayload;
-
-  if (declaredCaseType.isVoid) {
-    resolvedTypeName = noPayloadTypeName;
-    requiresPayload = false;
+  if (declaredCaseType != null) {
+    final resolvedTypeName = _resolveTypeName(declaredCaseType);
+    return CaseTypeSpec(
+      name: resolvedTypeName,
+      requiresPayload: true,
+      isDirectlyRecursive: resolvedTypeName == sumTypeName,
+    );
   } else {
-    resolvedTypeName = resolveTypeName(declaredCaseType);
-    requiresPayload = true;
+    return CaseTypeSpec(
+      name: noPayloadTypeName,
+      requiresPayload: false,
+      isDirectlyRecursive: false,
+    );
   }
-  return CaseTypeSpec(
-    name: resolvedTypeName,
-    requiresPayload: requiresPayload,
-    isDirectlyRecursive: resolvedTypeName == sumTypeName,
-  );
 }
 
 String _resolveTypeName(
   DartType type, {
-  @required String Function(DartType) name,
+  String Function(DartType) name,
 }) {
+  name ??= (type) => type.name;
+
   String _resolveTypeName(DartType type) => [
         name(type),
         if (type is ParameterizedType && type.typeArguments.isNotEmpty) ...[
@@ -192,14 +160,6 @@ String _resolveTypeName(
           ">",
         ]
       ].join();
+
   return _resolveTypeName(type);
 }
-
-bool _isSumTypeAnchor(DartType type) => type.element.metadata.any((annotation) {
-      final annotationElement = annotation.element;
-      if (annotationElement is ConstructorElement) {
-        final annotationClassElement = annotationElement.enclosingElement;
-        return annotationClassElement.name == "$SumType";
-      }
-      return false;
-    });
