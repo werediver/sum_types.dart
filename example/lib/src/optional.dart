@@ -4,12 +4,14 @@ import 'package:sum_types/sum_types.dart';
 
 part 'optional.g.dart';
 
-@SumType([
-  // In a `CaseT` case-annotation reference a sum-type type-parameter by index.
-  CaseT(0, name: "some"),
-  Case<void>(name: "none"),
-])
-mixin _Optional<T> implements _OptionalBase<T> {
+@SumType()
+class Optional<T> extends _$Optional<T> {
+  const Optional.some(T value) : super(some: value);
+  const Optional.none() : super(none: const Unit());
+
+  factory Optional.fromNullable(T value) =>
+      value != null ? Optional.some(value) : Optional<T>.none();
+
   Optional<U> map<U>(U Function(T) f) => iswitch(
         some: (value) => Optional.some(f(value)),
         none: () => Optional<U>.none(),
@@ -19,43 +21,23 @@ mixin _Optional<T> implements _OptionalBase<T> {
         some: (value) => f(value),
         none: () => Optional<U>.none(),
       );
-}
 
-/// This is a pretty impractical way to serialize [Optional].
-/// It is here to test the code-generator.
-///
-/// A more practical approach would be to implement a direct converter like
-///
-///     class CarelessOptionalJsonConverter<T> implements JsonConverter<Optional<T>, Object> {
-///       ...
-///     }
-///
-@JsonSerializable(includeIfNull: false)
-class OptionalRecord<T> implements OptionalRecordBase<OptionalRecord<T>, T> {
-  const OptionalRecord({@required this.some, @required this.none});
-
-  factory OptionalRecord.fromJson(Map<String, Object> json) =>
-      _$OptionalRecordFromJson(json);
-
-  Map<String, Object> toJson() => _$OptionalRecordToJson(this);
-
-  @override
-  @_CarelessJsonConverter()
-  final T some;
-
-  @override
-  final Unit none;
+  T valueOr(T Function() fallback) =>
+      iswitch(some: (value) => value, none: fallback);
 }
 
 /// Works for types directly supported by both `JsonEncoder` and `JsonDecoder`.
 ///
 /// No static guarantees.
-class _CarelessJsonConverter<T> implements JsonConverter<T, Object> {
-  const _CarelessJsonConverter();
+///
+/// See https://github.com/dart-lang/json_serializable/blob/master/example/lib/json_converter_example.dart
+class CarelessOptionalConverter<T>
+    implements JsonConverter<Optional<T>, Object> {
+  const CarelessOptionalConverter();
 
   @override
-  T fromJson(Object json) => json as T;
+  Optional<T> fromJson(Object json) => Optional.fromNullable(json as T);
 
   @override
-  Object toJson(T object) => object;
+  Object toJson(Optional<T> object) => object.valueOr(() => null);
 }

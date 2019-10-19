@@ -4,11 +4,18 @@ import 'package:sum_types/sum_types.dart';
 
 part 'nat.g.dart';
 
-@SumType([
-  Case<void>(name: "zero"),
-  Case<_Nat>(name: "next"),
-])
-mixin _Nat implements _NatBase {
+@SumType()
+class Nat extends _$Nat {
+  const Nat.zero() : super(zero: const Unit());
+  const Nat.next(Nat value) : super(next: value);
+
+  factory Nat.fromJson(Map<String, Object> json) =>
+      _$Nat.load(_NatRecord.fromJson(json));
+
+  Map<String, Object> toJson() =>
+      dump<_NatRecord>(({zero, next}) => _NatRecord(zero: zero, next: next))
+          .toJson();
+
   Nat operator +(Nat other) => iswitch(
         zero: () => other,
         next: (next) => Nat.next(next + other),
@@ -21,27 +28,19 @@ mixin _Nat implements _NatBase {
 }
 
 @JsonSerializable(includeIfNull: false)
-class NatRecord implements NatRecordBase<NatRecord> {
-  const NatRecord({
+class _NatRecord implements NatRecordBase<_NatRecord> {
+  const _NatRecord({
     this.zero,
     this.next,
   });
 
-  factory NatRecord.fromJson(Map<String, Object> json) =>
-      _$NatRecordFromJson(json);
+  factory _NatRecord.fromJson(Map<String, Object> json) =>
+      _$_NatRecordFromJson(json);
 
-  Map<String, dynamic> toJson() => _$NatRecordToJson(this);
+  Map<String, dynamic> toJson() => _$_NatRecordToJson(this);
 
   @override
   final Unit zero;
   @override
-  final NatRecord next;
+  final _NatRecord next;
 }
-
-@SumType([
-  // In a case-annotation reference another sum-type defined in the same package
-  // by its mix-in name.
-  Case<_Nat>(name: "some"),
-  Case<void>(name: "none"),
-])
-mixin _OptionalNat implements _OptionalNatBase {}
