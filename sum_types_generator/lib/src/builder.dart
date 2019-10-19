@@ -159,7 +159,7 @@ String loadFromRecord(SumTypeSpec spec) => function(
           return [
             "if ($cond) {",
             "return ",
-            if (!expected.type.isDirectlyRecursive && spec.typeParams.isEmpty)
+            if (!expected.type.requiresPayload && spec.typeParams.isEmpty)
               "const ",
             "${spec.sumTypeName}${specialize(spec.typeParams.map((param) => param.name))}.${expected.name}(",
             if (expected.type.isDirectlyRecursive)
