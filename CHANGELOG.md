@@ -1,3 +1,7 @@
+## 0.2.0+1
+
+- Fix inter-package dependencies. 
+
 ## 0.2.0
 
 - This is a major update with backward-incompatible changes!
