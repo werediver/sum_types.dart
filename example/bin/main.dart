@@ -25,14 +25,11 @@ void showcaseNatJson() {
   const originalNat = Nat.next(Nat.zero());
   print("Original object: $originalNat");
 
-  final originalRec = originalNat
-      .dump<NatRecord>(({zero, next}) => NatRecord(zero: zero, next: next));
-  final jsonString = const JsonEncoder().convert(originalRec);
+  final jsonString = const JsonEncoder().convert(originalNat);
   print("JSON string: $jsonString");
 
   final Object jsonObject = const JsonDecoder().convert(jsonString);
-  final recoveredRec = NatRecord.fromJson(jsonObject as Map<String, Object>);
-  final recoveredNat = Nat.load(recoveredRec);
+  final recoveredNat = Nat.fromJson(jsonObject as Map<String, Object>);
   print("Recovered object: $recoveredNat");
   print("");
 }
@@ -43,18 +40,14 @@ void showcaseOptionalJson() {
   const originalOpt = Optional.some(1);
   print("Original object: $originalOpt");
 
-  final originalRec = originalOpt
-      .dump(({some, none}) => OptionalRecord(some: some, none: none));
-  print("Record: $originalOpt");
-
-  final jsonString = const JsonEncoder().convert(originalRec);
+  final jsonString = const JsonEncoder()
+      .convert(const CarelessOptionalConverter<int>().toJson(originalOpt));
   print("JSON string: $jsonString");
 
   final Object jsonObject = const JsonDecoder().convert(jsonString);
-  final recoveredRec =
-      OptionalRecord<int>.fromJson(jsonObject as Map<String, Object>);
+  final recoveredOpt =
+      const CarelessOptionalConverter<int>().fromJson(jsonObject);
 
-  final recoveredOpt = Optional.load<OptionalRecord<int>, int>(recoveredRec);
   print("Recovered object: $recoveredOpt");
   print("");
 }

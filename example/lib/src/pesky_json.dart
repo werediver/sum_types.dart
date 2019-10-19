@@ -3,23 +3,22 @@ import 'package:sum_types/sum_types.dart';
 
 part 'pesky_json.g.dart';
 
-@SumType([
-  Case<Map<String, _PeskyJson>>(name: "object"),
-  Case<Iterable<_PeskyJson>>(name: "array"),
-  Case<String>(),
-  Case<double>(name: "number"),
-  Case<bool>(name: "boolean"),
-  Case<void>(name: "empty"),
-])
-mixin _PeskyJson implements _PeskyJsonBase {
-  // FIXME: Static methods are impossible to mix in. Find another approach.
-  static PeskyJson fromJson(Object json) {
+@SumType()
+class PeskyJson extends _$PeskyJson {
+  const PeskyJson.object(Map<String, PeskyJson> value) : super(object: value);
+  const PeskyJson.array(Iterable<PeskyJson> value) : super(array: value);
+  const PeskyJson.string(String value) : super(string: value);
+  const PeskyJson.number(double value) : super(number: value);
+  const PeskyJson.boolean(bool value) : super(boolean: value);
+  const PeskyJson.empty() : super(empty: const Unit());
+
+  factory PeskyJson.fromJson(Object json) {
     if (json is Map<String, Object>) {
       return PeskyJson.object(
-        json.map((key, value) => MapEntry(key, _PeskyJson.fromJson(value))),
+        json.map((key, value) => MapEntry(key, PeskyJson.fromJson(value))),
       );
     } else if (json is Iterable<Object>) {
-      return PeskyJson.array(json.map(_PeskyJson.fromJson));
+      return PeskyJson.array(json.map((json) => PeskyJson.fromJson(json)));
     } else if (json is String) {
       return PeskyJson.string(json);
     } else if (json is num) {

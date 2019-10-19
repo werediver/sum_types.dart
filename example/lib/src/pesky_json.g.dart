@@ -6,44 +6,8 @@ part of 'pesky_json.dart';
 // SumTypesGenerator
 // **************************************************************************
 
-abstract class _PeskyJsonBase {
-  __T iswitch<__T>({
-    @required __T Function(Map<String, PeskyJson>) object,
-    @required __T Function(Iterable<PeskyJson>) array,
-    @required __T Function(String) string,
-    @required __T Function(double) number,
-    @required __T Function(bool) boolean,
-    @required __T Function() empty,
-  });
-  __T iswitcho<__T>({
-    __T Function(Map<String, PeskyJson>) object,
-    __T Function(Iterable<PeskyJson>) array,
-    __T Function(String) string,
-    __T Function(double) number,
-    __T Function(bool) boolean,
-    __T Function() empty,
-    @required __T Function() otherwise,
-  });
-}
-
-class PeskyJson with _PeskyJson implements _PeskyJsonBase {
-  const PeskyJson.object(
-    Map<String, PeskyJson> object,
-  ) : this._unsafe(object: object);
-  const PeskyJson.array(
-    Iterable<PeskyJson> array,
-  ) : this._unsafe(array: array);
-  const PeskyJson.string(
-    String string,
-  ) : this._unsafe(string: string);
-  const PeskyJson.number(
-    double number,
-  ) : this._unsafe(number: number);
-  const PeskyJson.boolean(
-    bool boolean,
-  ) : this._unsafe(boolean: boolean);
-  const PeskyJson.empty() : this._unsafe(empty: const Unit());
-  const PeskyJson._unsafe({
+abstract class _$PeskyJson {
+  const _$PeskyJson({
     this.object,
     this.array,
     this.string,
@@ -86,59 +50,58 @@ class PeskyJson with _PeskyJson implements _PeskyJsonBase {
                 number == null &&
                 boolean == null &&
                 empty != null);
-  static PeskyJson load<__T extends PeskyJsonRecordBase<__T>>(
-    __T rec,
+  static PeskyJson load<$T extends PeskyJsonRecordBase<$T>>(
+    $T rec,
   ) {
-    if (!(rec.object != null &&
-            rec.array == null &&
-            rec.string == null &&
-            rec.number == null &&
-            rec.boolean == null &&
-            rec.empty == null ||
-        rec.object == null &&
-            rec.array != null &&
-            rec.string == null &&
-            rec.number == null &&
-            rec.boolean == null &&
-            rec.empty == null ||
-        rec.object == null &&
-            rec.array == null &&
-            rec.string != null &&
-            rec.number == null &&
-            rec.boolean == null &&
-            rec.empty == null ||
-        rec.object == null &&
-            rec.array == null &&
-            rec.string == null &&
-            rec.number != null &&
-            rec.boolean == null &&
-            rec.empty == null ||
-        rec.object == null &&
-            rec.array == null &&
-            rec.string == null &&
-            rec.number == null &&
-            rec.boolean != null &&
-            rec.empty == null ||
-        rec.object == null &&
-            rec.array == null &&
-            rec.string == null &&
-            rec.number == null &&
-            rec.boolean == null &&
-            rec.empty != null)) {
+    if (rec.object != null &&
+        rec.array == null &&
+        rec.string == null &&
+        rec.number == null &&
+        rec.boolean == null &&
+        rec.empty == null) {
+      return const PeskyJson.object(rec.object);
+    } else if (rec.object == null &&
+        rec.array != null &&
+        rec.string == null &&
+        rec.number == null &&
+        rec.boolean == null &&
+        rec.empty == null) {
+      return const PeskyJson.array(rec.array);
+    } else if (rec.object == null &&
+        rec.array == null &&
+        rec.string != null &&
+        rec.number == null &&
+        rec.boolean == null &&
+        rec.empty == null) {
+      return const PeskyJson.string(rec.string);
+    } else if (rec.object == null &&
+        rec.array == null &&
+        rec.string == null &&
+        rec.number != null &&
+        rec.boolean == null &&
+        rec.empty == null) {
+      return const PeskyJson.number(rec.number);
+    } else if (rec.object == null &&
+        rec.array == null &&
+        rec.string == null &&
+        rec.number == null &&
+        rec.boolean != null &&
+        rec.empty == null) {
+      return const PeskyJson.boolean(rec.boolean);
+    } else if (rec.object == null &&
+        rec.array == null &&
+        rec.string == null &&
+        rec.number == null &&
+        rec.boolean == null &&
+        rec.empty != null) {
+      return const PeskyJson.empty();
+    } else {
       throw Exception("Cannot select a $PeskyJson case given $rec");
     }
-    return PeskyJson._unsafe(
-      object: rec.object,
-      array: rec.array,
-      string: rec.string,
-      number: rec.number,
-      boolean: rec.boolean,
-      empty: rec.empty,
-    );
   }
 
-  __T dump<__T>(
-    __T Function({
+  $T dump<$T>(
+    $T Function({
       Map<String, PeskyJson> object,
       Iterable<PeskyJson> array,
       String string,
@@ -158,14 +121,13 @@ class PeskyJson with _PeskyJson implements _PeskyJsonBase {
     );
   }
 
-  @override
-  __T iswitch<__T>({
-    @required __T Function(Map<String, PeskyJson>) object,
-    @required __T Function(Iterable<PeskyJson>) array,
-    @required __T Function(String) string,
-    @required __T Function(double) number,
-    @required __T Function(bool) boolean,
-    @required __T Function() empty,
+  $T iswitch<$T>({
+    @required $T Function(Map<String, PeskyJson>) object,
+    @required $T Function(Iterable<PeskyJson>) array,
+    @required $T Function(String) string,
+    @required $T Function(double) number,
+    @required $T Function(bool) boolean,
+    @required $T Function() empty,
   }) {
     if (this.object != null) {
       return object(this.object);
@@ -184,17 +146,16 @@ class PeskyJson with _PeskyJson implements _PeskyJsonBase {
     }
   }
 
-  @override
-  __T iswitcho<__T>({
-    __T Function(Map<String, PeskyJson>) object,
-    __T Function(Iterable<PeskyJson>) array,
-    __T Function(String) string,
-    __T Function(double) number,
-    __T Function(bool) boolean,
-    __T Function() empty,
-    @required __T Function() otherwise,
+  $T iswitcho<$T>({
+    $T Function(Map<String, PeskyJson>) object,
+    $T Function(Iterable<PeskyJson>) array,
+    $T Function(String) string,
+    $T Function(double) number,
+    $T Function(bool) boolean,
+    $T Function() empty,
+    @required $T Function() otherwise,
   }) {
-    __T _otherwise(Object _) => otherwise();
+    $T _otherwise(Object _) => otherwise();
     return iswitch(
       object: object ?? _otherwise,
       array: array ?? _otherwise,

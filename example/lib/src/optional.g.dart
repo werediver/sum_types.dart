@@ -3,72 +3,28 @@
 part of 'optional.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-OptionalRecord<T> _$OptionalRecordFromJson<T>(Map<String, dynamic> json) {
-  return OptionalRecord<T>(
-    some: _CarelessJsonConverter<T>().fromJson(json['some']),
-    none: json['none'] == null
-        ? null
-        : Unit.fromJson(json['none'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$OptionalRecordToJson<T>(OptionalRecord<T> instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('some', _CarelessJsonConverter<T>().toJson(instance.some));
-  writeNotNull('none', instance.none);
-  return val;
-}
-
-// **************************************************************************
 // SumTypesGenerator
 // **************************************************************************
 
-abstract class _OptionalBase<T> {
-  __T iswitch<__T>({
-    @required __T Function(T) some,
-    @required __T Function() none,
-  });
-  __T iswitcho<__T>({
-    __T Function(T) some,
-    __T Function() none,
-    @required __T Function() otherwise,
-  });
-}
-
-class Optional<T> with _Optional<T> implements _OptionalBase<T> {
-  const Optional.some(
-    T some,
-  ) : this._unsafe(some: some);
-  const Optional.none() : this._unsafe(none: const Unit());
-  const Optional._unsafe({
+abstract class _$Optional<T> {
+  const _$Optional({
     this.some,
     this.none,
   }) : assert(some != null && none == null || some == null && none != null);
-  static Optional<T> load<__T extends OptionalRecordBase<__T, T>, T>(
-    __T rec,
+  static Optional<T> load<$T extends OptionalRecordBase<$T, T>, T>(
+    $T rec,
   ) {
-    if (!(rec.some != null && rec.none == null ||
-        rec.some == null && rec.none != null)) {
+    if (rec.some != null && rec.none == null) {
+      return Optional<T>.some(rec.some);
+    } else if (rec.some == null && rec.none != null) {
+      return Optional<T>.none();
+    } else {
       throw Exception("Cannot select a $Optional case given $rec");
     }
-    return Optional._unsafe(
-      some: rec.some,
-      none: rec.none,
-    );
   }
 
-  __T dump<__T>(
-    __T Function({
+  $T dump<$T>(
+    $T Function({
       T some,
       Unit none,
     })
@@ -80,10 +36,9 @@ class Optional<T> with _Optional<T> implements _OptionalBase<T> {
     );
   }
 
-  @override
-  __T iswitch<__T>({
-    @required __T Function(T) some,
-    @required __T Function() none,
+  $T iswitch<$T>({
+    @required $T Function(T) some,
+    @required $T Function() none,
   }) {
     if (this.some != null) {
       return some(this.some);
@@ -94,13 +49,12 @@ class Optional<T> with _Optional<T> implements _OptionalBase<T> {
     }
   }
 
-  @override
-  __T iswitcho<__T>({
-    __T Function(T) some,
-    __T Function() none,
-    @required __T Function() otherwise,
+  $T iswitcho<$T>({
+    $T Function(T) some,
+    $T Function() none,
+    @required $T Function() otherwise,
   }) {
-    __T _otherwise(Object _) => otherwise();
+    $T _otherwise(Object _) => otherwise();
     return iswitch(
       some: some ?? _otherwise,
       none: none ?? otherwise,
