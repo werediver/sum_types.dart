@@ -1,3 +1,8 @@
+## 0.2.0
+
+- This is a major update with backward-incompatible changes!
+- Implement a new generation scheme with user-defined top-level classes. The new scheme improves interoperability with other code generators and simplifies sum-type annotations a lot.
+
 ## 0.1.5+1
 
 - Update README.md.

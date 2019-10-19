@@ -6,6 +6,8 @@
 
 [sum_types](https://pub.dev/packages/sum_types) and [sum_types_generator](https://pub.dev/packages/sum_types_generator) packages together define a code generator enabling [sum-types](https://en.wikipedia.org/wiki/Sum_type) in Dart.
 
+NOTE: v0.2.0 is a major update with backward-incompatible [changes](CHANGELOG.md#020).
+
 ## Example
 
 In [example/lib/src/](example/lib/src) you can find a few sum-type declarations and the code generated for them.
@@ -16,17 +18,17 @@ This one models the natural numbers (with zero):
 import 'package:meta/meta.dart';
 import 'package:sum_types/sum_types.dart';
 
-@SumType([
-  Case<void>(name: "zero"),
-  Case<_Nat>(name: "next"),
-])
-mixin _Nat implements _NatBase {
-  Nat operator +(Nat other) => iswitch(
+@SumType()
+class Nat extends _$Nat {
+  const Nat.zero() : super(zero: const Unit());
+  const Nat.next(Nat value) : super(next: value);
+
+  Nat operator +(Nat other) => this.iswitch(
         zero: () => other,
         next: (next) => Nat.next(next + other),
       );
 
-  int toInt() => iswitch(
+  int toInt() => this.iswitch(
         zero: () => 0,
         next: (next) => 1 + next.toInt(),
       );
