@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Fix `load(·)` method generation.
+
 ## 0.2.0+1
 
 - Fix inter-package dependencies. 

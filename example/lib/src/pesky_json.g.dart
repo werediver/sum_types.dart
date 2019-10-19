@@ -59,35 +59,35 @@ abstract class _$PeskyJson {
         rec.number == null &&
         rec.boolean == null &&
         rec.empty == null) {
-      return const PeskyJson.object(rec.object);
+      return PeskyJson.object(rec.object);
     } else if (rec.object == null &&
         rec.array != null &&
         rec.string == null &&
         rec.number == null &&
         rec.boolean == null &&
         rec.empty == null) {
-      return const PeskyJson.array(rec.array);
+      return PeskyJson.array(rec.array);
     } else if (rec.object == null &&
         rec.array == null &&
         rec.string != null &&
         rec.number == null &&
         rec.boolean == null &&
         rec.empty == null) {
-      return const PeskyJson.string(rec.string);
+      return PeskyJson.string(rec.string);
     } else if (rec.object == null &&
         rec.array == null &&
         rec.string == null &&
         rec.number != null &&
         rec.boolean == null &&
         rec.empty == null) {
-      return const PeskyJson.number(rec.number);
+      return PeskyJson.number(rec.number);
     } else if (rec.object == null &&
         rec.array == null &&
         rec.string == null &&
         rec.number == null &&
         rec.boolean != null &&
         rec.empty == null) {
-      return const PeskyJson.boolean(rec.boolean);
+      return PeskyJson.boolean(rec.boolean);
     } else if (rec.object == null &&
         rec.array == null &&
         rec.string == null &&
