@@ -1,3 +1,7 @@
+## 0.2.1+1
+
+- Allow "analyzer" versions below 0.40.0
+
 ## 0.2.1
 
 - Fix `load(·)` method generation.
