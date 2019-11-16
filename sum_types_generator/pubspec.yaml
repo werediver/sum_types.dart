@@ -1,6 +1,6 @@
 name: sum_types_generator
 description: sum_types and sum_types_generator packages together define a code generator enabling sum-types in Dart.
-version: 0.2.1+1
+version: 0.2.1+2
 homepage: https://github.com/werediver/sum-types-dart
 author: Raman Fedaseyeu <raman.fedaseyeu@gmail.com>
 

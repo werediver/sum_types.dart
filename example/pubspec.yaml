@@ -18,9 +18,3 @@ dev_dependencies:
   sum_types_generator:
   json_serializable:
   build_runner:
-
-dependency_overrides:
-  sum_types:
-    path: ../sum_types
-  sum_types_generator:
-    path: ../sum_types_generator
