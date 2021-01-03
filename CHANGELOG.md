@@ -1,3 +1,7 @@
+## 0.2.1+3
+
+- Allow "analyzer" versions up to 0.42.0
+
 ## 0.2.1+2
 
 - Make sure no `dependency_overrides` are used in the example project
