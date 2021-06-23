@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/werediver/sum_types.dart.svg?branch=master)](https://travis-ci.org/werediver/sum_types.dart)
+[![Build Status](https://travis-ci.com/werediver/sum_types.dart.svg?branch=master)](https://travis-ci.com/werediver/sum_types.dart)
 [![sum_types version](https://img.shields.io/pub/v/sum_types?label=sum_types)](https://pub.dev/packages/sum_types)
 [![sum_types_generator version](https://img.shields.io/pub/v/sum_types_generator?label=sum_types_generator)](https://pub.dev/packages/sum_types_generator)
 
