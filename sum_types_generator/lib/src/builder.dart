@@ -108,9 +108,8 @@ String generateSumType(SumTypeSpec spec) => [
         body: [
           for (final caseSpec in spec.cases)
             getter(
-              type: "${caseSpec.type.isDirectlyRecursive
-                  ? "Self"
-                  : caseSpec.type.name}?",
+              type:
+                  "${caseSpec.type.isDirectlyRecursive ? "Self" : caseSpec.type.name}?",
               name: caseSpec.name,
             ),
         ],
@@ -184,7 +183,8 @@ String dumpToRecord(SumTypeSpec spec) => function(
             ...spec.cases
                 .map(
                   (c) => param(
-                    type: "${c.type.isDirectlyRecursive ? "\$T" : c.type.name}?",
+                    type:
+                        "${c.type.isDirectlyRecursive ? "\$T" : c.type.name}?",
                     name: c.name,
                   ),
                 )

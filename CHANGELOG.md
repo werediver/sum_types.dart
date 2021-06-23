@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Adopt Dart 2.12 / Flutter 2 null-safety
+
 ## 0.2.1+3
 
 - Allow "analyzer" versions up to 0.42.0
