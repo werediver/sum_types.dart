@@ -9,10 +9,10 @@ class Nat extends _$Nat {
   const Nat.zero() : super(zero: const Unit());
   const Nat.next(Nat value) : super(next: value);
 
-  factory Nat.fromJson(Map<String, Object> json) =>
+  factory Nat.fromJson(Map<String, dynamic> json) =>
       _$Nat.load(_NatRecord.fromJson(json));
 
-  Map<String, Object> toJson() =>
+  Map<String, dynamic> toJson() =>
       dump<_NatRecord>(({zero, next}) => _NatRecord(zero: zero, next: next))
           .toJson();
 
@@ -34,13 +34,13 @@ class _NatRecord implements NatRecordBase<_NatRecord> {
     this.next,
   });
 
-  factory _NatRecord.fromJson(Map<String, Object> json) =>
+  factory _NatRecord.fromJson(Map<String, dynamic> json) =>
       _$_NatRecordFromJson(json);
 
   Map<String, dynamic> toJson() => _$_NatRecordToJson(this);
 
   @override
-  final Unit zero;
+  final Unit? zero;
   @override
-  final _NatRecord next;
+  final _NatRecord? next;
 }

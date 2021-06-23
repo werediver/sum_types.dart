@@ -11,6 +11,7 @@ analyzer:
     prefer_final_locals: warning
   exclude:
     - "**.g.dart"
+    - example/**
 
 # Find the rules description at https://dart-lang.github.io/linter/lints/
 # Find the full list of rules at http://dart-lang.github.io/linter/lints/options/options.html

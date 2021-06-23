@@ -59,35 +59,35 @@ abstract class _$PeskyJson {
         rec.number == null &&
         rec.boolean == null &&
         rec.empty == null) {
-      return PeskyJson.object(rec.object);
+      return PeskyJson.object(rec.object!);
     } else if (rec.object == null &&
         rec.array != null &&
         rec.string == null &&
         rec.number == null &&
         rec.boolean == null &&
         rec.empty == null) {
-      return PeskyJson.array(rec.array);
+      return PeskyJson.array(rec.array!);
     } else if (rec.object == null &&
         rec.array == null &&
         rec.string != null &&
         rec.number == null &&
         rec.boolean == null &&
         rec.empty == null) {
-      return PeskyJson.string(rec.string);
+      return PeskyJson.string(rec.string!);
     } else if (rec.object == null &&
         rec.array == null &&
         rec.string == null &&
         rec.number != null &&
         rec.boolean == null &&
         rec.empty == null) {
-      return PeskyJson.number(rec.number);
+      return PeskyJson.number(rec.number!);
     } else if (rec.object == null &&
         rec.array == null &&
         rec.string == null &&
         rec.number == null &&
         rec.boolean != null &&
         rec.empty == null) {
-      return PeskyJson.boolean(rec.boolean);
+      return PeskyJson.boolean(rec.boolean!);
     } else if (rec.object == null &&
         rec.array == null &&
         rec.string == null &&
@@ -102,12 +102,12 @@ abstract class _$PeskyJson {
 
   $T dump<$T>(
     $T Function({
-      Map<String, PeskyJson> object,
-      Iterable<PeskyJson> array,
-      String string,
-      double number,
-      bool boolean,
-      Unit empty,
+      Map<String, PeskyJson>? object,
+      Iterable<PeskyJson>? array,
+      String? string,
+      double? number,
+      bool? boolean,
+      Unit? empty,
     })
         make,
   ) {
@@ -122,23 +122,23 @@ abstract class _$PeskyJson {
   }
 
   $T iswitch<$T>({
-    @required $T Function(Map<String, PeskyJson>) object,
-    @required $T Function(Iterable<PeskyJson>) array,
-    @required $T Function(String) string,
-    @required $T Function(double) number,
-    @required $T Function(bool) boolean,
-    @required $T Function() empty,
+    required $T Function(Map<String, PeskyJson>) object,
+    required $T Function(Iterable<PeskyJson>) array,
+    required $T Function(String) string,
+    required $T Function(double) number,
+    required $T Function(bool) boolean,
+    required $T Function() empty,
   }) {
     if (this.object != null) {
-      return object(this.object);
+      return object(this.object!);
     } else if (this.array != null) {
-      return array(this.array);
+      return array(this.array!);
     } else if (this.string != null) {
-      return string(this.string);
+      return string(this.string!);
     } else if (this.number != null) {
-      return number(this.number);
+      return number(this.number!);
     } else if (this.boolean != null) {
-      return boolean(this.boolean);
+      return boolean(this.boolean!);
     } else if (this.empty != null) {
       return empty();
     } else {
@@ -147,15 +147,15 @@ abstract class _$PeskyJson {
   }
 
   $T iswitcho<$T>({
-    $T Function(Map<String, PeskyJson>) object,
-    $T Function(Iterable<PeskyJson>) array,
-    $T Function(String) string,
-    $T Function(double) number,
-    $T Function(bool) boolean,
-    $T Function() empty,
-    @required $T Function() otherwise,
+    $T Function(Map<String, PeskyJson>)? object,
+    $T Function(Iterable<PeskyJson>)? array,
+    $T Function(String)? string,
+    $T Function(double)? number,
+    $T Function(bool)? boolean,
+    $T Function()? empty,
+    required $T Function() otherwise,
   }) {
-    $T _otherwise(Object _) => otherwise();
+    $T _otherwise(Object? _) => otherwise();
     return iswitch(
       object: object ?? _otherwise,
       array: array ?? _otherwise,
@@ -205,24 +205,24 @@ abstract class _$PeskyJson {
   }
 
   @protected
-  final Map<String, PeskyJson> object;
+  final Map<String, PeskyJson>? object;
   @protected
-  final Iterable<PeskyJson> array;
+  final Iterable<PeskyJson>? array;
   @protected
-  final String string;
+  final String? string;
   @protected
-  final double number;
+  final double? number;
   @protected
-  final bool boolean;
+  final bool? boolean;
   @protected
-  final Unit empty;
+  final Unit? empty;
 }
 
 abstract class PeskyJsonRecordBase<Self> {
-  Map<String, PeskyJson> get object;
-  Iterable<PeskyJson> get array;
-  String get string;
-  double get number;
-  bool get boolean;
-  Unit get empty;
+  Map<String, PeskyJson>? get object;
+  Iterable<PeskyJson>? get array;
+  String? get string;
+  double? get number;
+  bool? get boolean;
+  Unit? get empty;
 }
