@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
-import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:sum_types/sum_types.dart' as annotations show SumType;
 import 'package:sum_types_generator/src/common_spec.dart';
@@ -92,7 +91,7 @@ String generateSumType(SumTypeSpec spec) => [
           for (final caseSpec in spec.cases) ...[
             "@protected",
             finalField(
-              type: caseSpec.type.name,
+              type: "${caseSpec.type.name}?",
               name: caseSpec.name,
             ),
           ],
@@ -109,9 +108,8 @@ String generateSumType(SumTypeSpec spec) => [
         body: [
           for (final caseSpec in spec.cases)
             getter(
-              type: caseSpec.type.isDirectlyRecursive
-                  ? "Self"
-                  : caseSpec.type.name,
+              type:
+                  "${caseSpec.type.isDirectlyRecursive ? "Self" : caseSpec.type.name}?",
               name: caseSpec.name,
             ),
         ],
@@ -163,9 +161,9 @@ String loadFromRecord(SumTypeSpec spec) => function(
               "const ",
             "${spec.sumTypeName}${specialize(spec.typeParams.map((param) => param.name))}.${expected.name}(",
             if (expected.type.isDirectlyRecursive)
-              "load(rec.${expected.name})"
+              "load(rec.${expected.name}!)"
             else if (expected.type.requiresPayload)
-              "rec.${expected.name}",
+              "rec.${expected.name}!",
             ");",
             "} else ",
           ].join();
@@ -185,7 +183,8 @@ String dumpToRecord(SumTypeSpec spec) => function(
             ...spec.cases
                 .map(
                   (c) => param(
-                    type: c.type.isDirectlyRecursive ? "\$T" : c.type.name,
+                    type:
+                        "${c.type.isDirectlyRecursive ? "\$T" : c.type.name}?",
                     name: c.name,
                   ),
                 )
@@ -218,8 +217,8 @@ String dumpToRecord(SumTypeSpec spec) => function(
     );
 
 String exhaustiveSwitch({
-  @required SumTypeSpec spec,
-  @required bool implement,
+  required SumTypeSpec spec,
+  required bool implement,
 }) =>
     function(
       type: "\$T",
@@ -229,7 +228,7 @@ String exhaustiveSwitch({
         for (final caseSpec in spec.cases)
           param(
             type: [
-              "@required \$T Function(",
+              "required \$T Function(",
               if (caseSpec.type.requiresPayload) caseSpec.type.name,
               ")",
             ].join(),
@@ -241,7 +240,7 @@ String exhaustiveSwitch({
               for (final caseSpec in spec.cases) ...[
                 "if (this.${caseSpec.name} != null) {",
                 "return ${caseSpec.name}(",
-                if (caseSpec.type.requiresPayload) "this.${caseSpec.name}",
+                if (caseSpec.type.requiresPayload) "this.${caseSpec.name}!",
                 "); } else"
               ],
               "{ throw StateError(\"an instance of \$${spec.sumTypeName} has no case selected\"); }",
@@ -250,8 +249,8 @@ String exhaustiveSwitch({
     );
 
 String inexhaustiveSwitch({
-  @required SumTypeSpec spec,
-  @required bool implement,
+  required SumTypeSpec spec,
+  required bool implement,
 }) =>
     function(
       type: "\$T",
@@ -263,18 +262,18 @@ String inexhaustiveSwitch({
             type: [
               "\$T Function(",
               if (caseSpec.type.requiresPayload) caseSpec.type.name,
-              ")",
+              ")?",
             ].join(),
             name: caseSpec.name,
           ),
         param(
-          type: "@required \$T Function()",
+          type: "required \$T Function()",
           name: "otherwise",
         ),
       ],
       body: implement
           ? [
-              "\$T _otherwise(Object _) => otherwise();",
+              "\$T _otherwise(Object? _) => otherwise();",
               "return iswitch(",
               ...spec.cases.map((c) =>
                   "${c.name}: ${c.name} ?? ${c.type.requiresPayload ? "_otherwise" : "otherwise"},"),

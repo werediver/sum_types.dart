@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'package:sum_types_generator/src/common_spec.dart';
 
 String undecoratedID(String id) {
@@ -31,9 +30,9 @@ int _idDecorationLen(String id) {
 
 String classDecl({
   bool abstract = false,
-  @required String name,
+  required String name,
   Iterable<TypeParamSpec> typeParams = const [],
-  String superclass,
+  String? superclass,
   Iterable<String> mixins = const [],
   Iterable<String> ifaces = const [],
   Iterable<String> body = const [],
@@ -58,10 +57,10 @@ String classDecl({
       "{",
       ...body,
       "}",
-    ].join(" ");
+    ].join("\n");
 
 String mixinDecl({
-  @required String name,
+  required String name,
   Iterable<TypeParamSpec> typeParams = const [],
   Iterable<String> superclassConstraints = const [],
   Iterable<String> ifaces = const [],
@@ -82,12 +81,12 @@ String mixinDecl({
       "{",
       ...body,
       "}",
-    ].join(" ");
+    ].join("\n");
 
 String constructor({
-  @required bool isConst,
-  @required String type,
-  String name,
+  required bool isConst,
+  required String type,
+  String? name,
   Iterable<String> posParams = const [],
   Iterable<String> namedParams = const [],
   Iterable<String> initializers = const [],
@@ -113,12 +112,12 @@ String constructor({
 
 String function({
   bool isStatic = false,
-  @required String type,
-  @required String name,
+  required String type,
+  required String name,
   Iterable<TypeParamSpec> typeParams = const [],
   Iterable<String> posParams = const [],
   Iterable<String> namedParams = const [],
-  Iterable<String> body,
+  Iterable<String>? body,
 }) =>
     [
       if (isStatic) "static ",
@@ -136,21 +135,21 @@ String function({
       ")",
       if (body != null) ...[
         "{",
-        body.join(" "),
+        body.join("\n"),
         "}",
       ] else
         ";",
-    ].join();
+    ].join("\n");
 
-String param({String type, @required String name}) => [
+String param({String? type, required String name}) => [
       if (type != null) type,
       name,
     ].join(" ");
 
 String getter({
-  String type,
-  @required String name,
-  Iterable<String> body,
+  required String type,
+  required String name,
+  Iterable<String>? body,
 }) =>
     [
       type,
@@ -164,7 +163,7 @@ String getter({
         ";",
     ].join();
 
-String finalField({@required String type, @required String name}) => [
+String finalField({required String type, required String name}) => [
       "final",
       type,
       name,
@@ -197,8 +196,8 @@ String appendComma(String s) => "$s,";
 Result cartprod2<A, B, Tuple, Row, Result>(
   Iterable<A> as,
   Iterable<B> bs, {
-  @required Tuple Function(A a, B b) tuple,
-  @required Row Function(Iterable<Tuple>) row,
-  @required Result Function(Iterable<Row>) result,
+  required Tuple Function(A a, B b) tuple,
+  required Row Function(Iterable<Tuple>) row,
+  required Result Function(Iterable<Row>) result,
 }) =>
     result(as.map((a) => row(bs.map((b) => tuple(a, b)))));

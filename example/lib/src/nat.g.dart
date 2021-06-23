@@ -46,7 +46,7 @@ abstract class _$Nat {
     if (rec.zero != null && rec.next == null) {
       return const Nat.zero();
     } else if (rec.zero == null && rec.next != null) {
-      return Nat.next(load(rec.next));
+      return Nat.next(load(rec.next!));
     } else {
       throw Exception("Cannot select a $Nat case given $rec");
     }
@@ -54,8 +54,8 @@ abstract class _$Nat {
 
   $T dump<$T>(
     $T Function({
-      Unit zero,
-      $T next,
+      Unit? zero,
+      $T? next,
     })
         make,
   ) {
@@ -66,24 +66,24 @@ abstract class _$Nat {
   }
 
   $T iswitch<$T>({
-    @required $T Function() zero,
-    @required $T Function(Nat) next,
+    required $T Function() zero,
+    required $T Function(Nat) next,
   }) {
     if (this.zero != null) {
       return zero();
     } else if (this.next != null) {
-      return next(this.next);
+      return next(this.next!);
     } else {
       throw StateError("an instance of $Nat has no case selected");
     }
   }
 
   $T iswitcho<$T>({
-    $T Function() zero,
-    $T Function(Nat) next,
-    @required $T Function() otherwise,
+    $T Function()? zero,
+    $T Function(Nat)? next,
+    required $T Function() otherwise,
   }) {
-    $T _otherwise(Object _) => otherwise();
+    $T _otherwise(Object? _) => otherwise();
     return iswitch(
       zero: zero ?? otherwise,
       next: next ?? _otherwise,
@@ -117,12 +117,12 @@ abstract class _$Nat {
   }
 
   @protected
-  final Unit zero;
+  final Unit? zero;
   @protected
-  final Nat next;
+  final Nat? next;
 }
 
 abstract class NatRecordBase<Self> {
-  Unit get zero;
-  Self get next;
+  Unit? get zero;
+  Self? get next;
 }
