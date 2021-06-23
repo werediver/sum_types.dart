@@ -12,7 +12,7 @@ void main(List<String> arguments) {
 void showcaseNatBasic() {
   print("## $Nat basic\n");
 
-  final x = Nat.next(Nat.next(Nat.zero()));
+  const x = Nat.next(Nat.next(Nat.zero()));
   final xx = x + x;
   print("  $x\n+ $x\n= $xx");
   print(" (${x.toInt()} + ${x.toInt()} = ${xx.toInt()})");
@@ -29,7 +29,7 @@ void showcaseNatJson() {
   print("JSON string: $jsonString");
 
   final jsonObject = const JsonDecoder().convert(jsonString) as Object;
-  final recoveredNat = Nat.fromJson(jsonObject as Map<String, dynamic>);
+  final recoveredNat = Nat.fromJson(jsonObject as Map<String, Object?>);
   print("Recovered object: $recoveredNat");
   print("");
 }

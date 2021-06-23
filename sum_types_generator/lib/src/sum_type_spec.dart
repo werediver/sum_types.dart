@@ -99,7 +99,7 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
       typeParams: element.typeParameters.map(
         (e) => TypeParamSpec(
           name: e.name,
-          bound: e.bound?.getDisplayString(withNullability: false),
+          bound: e.bound?.element?.name,
         ),
       ),
       cases: element.constructors
@@ -131,7 +131,7 @@ CaseTypeSpec _makeCaseTypeSpec({
   required String noPayloadTypeName,
 }) {
   if (declaredCaseType != null) {
-    final resolvedTypeName = declaredCaseType.getDisplayString(withNullability: false);
+    final resolvedTypeName = _resolveTypeName(declaredCaseType);
     return CaseTypeSpec(
       name: resolvedTypeName,
       requiresPayload: true,
@@ -144,4 +144,22 @@ CaseTypeSpec _makeCaseTypeSpec({
       isDirectlyRecursive: false,
     );
   }
+}
+
+String _resolveTypeName(
+  DartType type, {
+  String? Function(DartType)? name,
+}) {
+  final _name = name ?? (type) => type.element?.name;
+
+  String _resolveTypeName(DartType type) => [
+        _name(type),
+        if (type is ParameterizedType && type.typeArguments.isNotEmpty) ...[
+          "<",
+          type.typeArguments.map(_resolveTypeName).join(", "),
+          ">",
+        ]
+      ].join();
+
+  return _resolveTypeName(type);
 }
