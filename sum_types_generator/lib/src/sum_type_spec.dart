@@ -8,12 +8,12 @@ import 'package:sum_types_generator/src/common_spec.dart';
 @immutable
 class SumTypeSpec {
   const SumTypeSpec({
-    @required this.sumTypeName,
-    @required this.sumTypeBaseName,
-    @required this.recordIfaceName,
-    @required this.typeParams,
-    @required this.cases,
-    @required this.noPayloadTypeInstance,
+    required this.sumTypeName,
+    required this.sumTypeBaseName,
+    required this.recordIfaceName,
+    required this.typeParams,
+    required this.cases,
+    required this.noPayloadTypeInstance,
   });
 
   final String sumTypeName;
@@ -27,8 +27,8 @@ class SumTypeSpec {
 @immutable
 class CaseSpec {
   const CaseSpec({
-    @required this.name,
-    @required this.type,
+    required this.name,
+    required this.type,
   });
 
   @override
@@ -52,9 +52,9 @@ class CaseSpec {
 @immutable
 class CaseTypeSpec {
   const CaseTypeSpec({
-    @required this.name,
-    @required this.requiresPayload,
-    @required this.isDirectlyRecursive,
+    required this.name,
+    required this.requiresPayload,
+    required this.isDirectlyRecursive,
   });
 
   @override
@@ -84,7 +84,7 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
 
   if (element is ClassElement && !element.isMixin && !element.isEnum) {
     final sumTypeName = element.name;
-    CaseTypeSpec __makeCaseTypeSpec(DartType type) => _makeCaseTypeSpec(
+    CaseTypeSpec __makeCaseTypeSpec(DartType? type) => _makeCaseTypeSpec(
           declaredCaseType: type,
           sumTypeName: sumTypeName,
           noPayloadTypeName: noPayloadTypeName,
@@ -99,11 +99,11 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
       typeParams: element.typeParameters.map(
         (e) => TypeParamSpec(
           name: e.name,
-          bound: e.bound?.name,
+          bound: e.bound?.getDisplayString(withNullability: false),
         ),
       ),
       cases: element.constructors
-          .where((ctor) => ctor.name?.isNotEmpty == true && !ctor.isFactory)
+          .where((ctor) => ctor.name.isNotEmpty && !ctor.isFactory)
           .map(__makeCaseSpec),
       noPayloadTypeInstance: noPayloadTypeInstance,
     );
@@ -113,11 +113,11 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
 
 CaseSpec _makeCaseSpec(
   ConstructorElement ctor, {
-  @required CaseTypeSpec Function(DartType) makeCaseTypeSpec,
+  required CaseTypeSpec Function(DartType?) makeCaseTypeSpec,
 }) {
   if (ctor.parameters.length <= 1) {
     final caseType =
-        ctor.parameters.firstWhere((_) => true, orElse: () => null)?.type;
+        ctor.parameters.isNotEmpty ? ctor.parameters.single.type : null;
     return CaseSpec(name: ctor.name, type: makeCaseTypeSpec(caseType));
   }
   throw Exception(
@@ -126,12 +126,12 @@ CaseSpec _makeCaseSpec(
 }
 
 CaseTypeSpec _makeCaseTypeSpec({
-  @required DartType declaredCaseType,
-  @required String sumTypeName,
-  @required String noPayloadTypeName,
+  DartType? declaredCaseType,
+  required String sumTypeName,
+  required String noPayloadTypeName,
 }) {
   if (declaredCaseType != null) {
-    final resolvedTypeName = _resolveTypeName(declaredCaseType);
+    final resolvedTypeName = declaredCaseType.getDisplayString(withNullability: false);
     return CaseTypeSpec(
       name: resolvedTypeName,
       requiresPayload: true,
@@ -144,22 +144,4 @@ CaseTypeSpec _makeCaseTypeSpec({
       isDirectlyRecursive: false,
     );
   }
-}
-
-String _resolveTypeName(
-  DartType type, {
-  String Function(DartType) name,
-}) {
-  name ??= (type) => type.name;
-
-  String _resolveTypeName(DartType type) => [
-        name(type),
-        if (type is ParameterizedType && type.typeArguments.isNotEmpty) ...[
-          "<",
-          type.typeArguments.map(_resolveTypeName).join(", "),
-          ">",
-        ]
-      ].join();
-
-  return _resolveTypeName(type);
 }

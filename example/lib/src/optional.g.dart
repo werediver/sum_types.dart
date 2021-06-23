@@ -15,7 +15,7 @@ abstract class _$Optional<T> {
     $T rec,
   ) {
     if (rec.some != null && rec.none == null) {
-      return Optional<T>.some(rec.some);
+      return Optional<T>.some(rec.some!);
     } else if (rec.some == null && rec.none != null) {
       return Optional<T>.none();
     } else {
@@ -25,8 +25,8 @@ abstract class _$Optional<T> {
 
   $T dump<$T>(
     $T Function({
-      T some,
-      Unit none,
+      T? some,
+      Unit? none,
     })
         make,
   ) {
@@ -37,11 +37,11 @@ abstract class _$Optional<T> {
   }
 
   $T iswitch<$T>({
-    @required $T Function(T) some,
-    @required $T Function() none,
+    required $T Function(T) some,
+    required $T Function() none,
   }) {
     if (this.some != null) {
-      return some(this.some);
+      return some(this.some!);
     } else if (this.none != null) {
       return none();
     } else {
@@ -50,11 +50,11 @@ abstract class _$Optional<T> {
   }
 
   $T iswitcho<$T>({
-    $T Function(T) some,
-    $T Function() none,
-    @required $T Function() otherwise,
+    $T Function(T)? some,
+    $T Function()? none,
+    required $T Function() otherwise,
   }) {
-    $T _otherwise(Object _) => otherwise();
+    $T _otherwise(Object? _) => otherwise();
     return iswitch(
       some: some ?? _otherwise,
       none: none ?? otherwise,
@@ -88,12 +88,12 @@ abstract class _$Optional<T> {
   }
 
   @protected
-  final T some;
+  final T? some;
   @protected
-  final Unit none;
+  final Unit? none;
 }
 
 abstract class OptionalRecordBase<Self, T> {
-  T get some;
-  Unit get none;
+  T? get some;
+  Unit? get none;
 }
