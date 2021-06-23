@@ -9,10 +9,11 @@ class PeskyJson extends _$PeskyJson {
   const PeskyJson.array(Iterable<PeskyJson> value) : super(array: value);
   const PeskyJson.string(String value) : super(string: value);
   const PeskyJson.number(double value) : super(number: value);
+  // ignore: avoid_positional_boolean_parameters
   const PeskyJson.boolean(bool value) : super(boolean: value);
   const PeskyJson.empty() : super(empty: const Unit());
 
-  factory PeskyJson.fromJson(Object json) {
+  factory PeskyJson.fromJson(Object? json) {
     if (json is Map<String, Object>) {
       return PeskyJson.object(
         json.map((key, value) => MapEntry(key, PeskyJson.fromJson(value))),
@@ -31,7 +32,7 @@ class PeskyJson extends _$PeskyJson {
     throw Exception("Cannot convert $json to $PeskyJson");
   }
 
-  Object toJson() => iswitch(
+  Object? toJson() => iswitch(
         object: (value) =>
             value.map((key, value) => MapEntry(key, value.toJson())),
         array: (value) => value.map((value) => value.toJson()),

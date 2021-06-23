@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 
-ExitCode run(String exe, List<String> args, {String workingDirectory}) {
+ExitCode run(String exe, List<String> args, {String? workingDirectory}) {
   print([
     "\n  In ",
     if (workingDirectory != null)
@@ -36,7 +36,7 @@ ExitCode run(String exe, List<String> args, {String workingDirectory}) {
 
 String _quoteArg(String arg) => arg.contains(" ") ? "\"$arg\"" : arg;
 
-T _cast<T>(dynamic value, {@required T Function() otherwise}) =>
+T _cast<T>(Object? value, {required T Function() otherwise}) =>
     value is T ? value : otherwise();
 
 @immutable

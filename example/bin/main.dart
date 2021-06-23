@@ -28,8 +28,8 @@ void showcaseNatJson() {
   final jsonString = const JsonEncoder().convert(originalNat);
   print("JSON string: $jsonString");
 
-  final Object jsonObject = const JsonDecoder().convert(jsonString);
-  final recoveredNat = Nat.fromJson(jsonObject as Map<String, Object>);
+  final jsonObject = const JsonDecoder().convert(jsonString) as Object;
+  final recoveredNat = Nat.fromJson(jsonObject as Map<String, Object?>);
   print("Recovered object: $recoveredNat");
   print("");
 }
@@ -44,7 +44,7 @@ void showcaseOptionalJson() {
       .convert(const CarelessOptionalConverter<int>().toJson(originalOpt));
   print("JSON string: $jsonString");
 
-  final Object jsonObject = const JsonDecoder().convert(jsonString);
+  final jsonObject = const JsonDecoder().convert(jsonString) as Object;
   final recoveredOpt =
       const CarelessOptionalConverter<int>().fromJson(jsonObject);
 

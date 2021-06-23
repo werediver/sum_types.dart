@@ -5,7 +5,7 @@ class Unit {
   const Unit();
 
   // ignore: avoid_unused_constructor_parameters
-  factory Unit.fromJson(Map<String, Object> _) => const Unit();
+  factory Unit.fromJson(Map<String, Object?> _) => const Unit();
 
   Map<String, Object> toJson() => {};
 
