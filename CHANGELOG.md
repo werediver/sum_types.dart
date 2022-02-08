@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Depend on `analyser` ^2.0.0
+
 ## 0.3.0
 
 - Adopt Dart 2.12 / Flutter 2 null-safety
@@ -20,7 +24,7 @@
 
 ## 0.2.0+1
 
-- Fix inter-package dependencies. 
+- Fix inter-package dependencies.
 
 ## 0.2.0
 
