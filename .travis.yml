@@ -1,4 +1,5 @@
 language: dart
 
+install: ""
 script:
   - ./housekeeper.sh
