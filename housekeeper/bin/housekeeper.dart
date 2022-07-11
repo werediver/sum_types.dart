@@ -16,7 +16,6 @@ void main(List<String> args) {
       success = run(
             "dart",
             [
-              "pub",
               "run",
               "dependency_validator",
             ],
@@ -29,7 +28,6 @@ void main(List<String> args) {
     success = run(
           "dart",
           [
-            "pub",
             "run",
             "--enable-asserts",
             "build_runner",

@@ -16,10 +16,3 @@ dev_dependencies:
 
 executables:
   housekeeper:
-
-dependency_validator:
-  exclude:
-    - 'example/**'
-  ignore:
-    - sum_types_generator
-    - json_serializable
