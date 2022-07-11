@@ -1,3 +1,3 @@
 #!/bin/sh -e
 
-pub run --enable-asserts housekeeper "$@"
+dart pub run --enable-asserts housekeeper "$@"
