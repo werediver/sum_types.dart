@@ -35,9 +35,9 @@ class _NatRecord implements NatRecordBase<_NatRecord> {
   });
 
   factory _NatRecord.fromJson(Map<String, Object?> json) =>
-      _$_NatRecordFromJson(json);
+      _$NatRecordFromJson(json);
 
-  Map<String, Object?> toJson() => _$_NatRecordToJson(this);
+  Map<String, Object?> toJson() => _$NatRecordToJson(this);
 
   @override
   final Unit? zero;
