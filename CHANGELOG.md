@@ -1,3 +1,9 @@
+## 0.3.2
+
+- Update `analyzer` constraint to `'>=2.0.0 <5.0.0'`
+- Update `housekeeper` to use `dart pub` and `dart run`
+- Drop `dependency_validator` command line parameters (they seem to not be needed anymore)
+
 ## 0.3.1
 
 - Depend on `analyser` ^2.0.0
