@@ -7,24 +7,17 @@ void main(List<String> args) {
   var success = true;
   final pkgDirs = findPkgDirs(Directory.current, withSourceDirs: true);
   for (final pkgDir in pkgDirs) {
-    success =
-        run("pub", ["get"], workingDirectory: pkgDir.path).indicatesSuccess &&
-            success;
+    success = run("dart", ["pub", "get"], workingDirectory: pkgDir.path)
+            .indicatesSuccess &&
+        success;
   }
   if (success) {
     for (final pkgDir in pkgDirs) {
       success = run(
-            "pub",
+            "dart",
             [
               "run",
               "dependency_validator",
-              "--exclude-dir",
-              "example",
-              "--ignore",
-              [
-                "sum_types_generator",
-                "json_serializable",
-              ].join(","),
             ],
             workingDirectory: pkgDir.path,
           ).indicatesSuccess &&
@@ -33,7 +26,7 @@ void main(List<String> args) {
   }
   if (success) {
     success = run(
-          "pub",
+          "dart",
           [
             "run",
             "--enable-asserts",
@@ -48,8 +41,8 @@ void main(List<String> args) {
   if (success) {
     for (final pkgDir in pkgDirs) {
       success = run(
-            "dartanalyzer",
-            ["."],
+            "dart",
+            ["analyze", "."],
             workingDirectory: pkgDir.path,
           ).indicatesSuccess &&
           success;
@@ -57,8 +50,12 @@ void main(List<String> args) {
   }
   if (success) {
     success = run(
-          "dartfmt",
-          ["--set-exit-if-changed", "-n", "."],
+          "dart",
+          [
+            "format",
+            "--set-exit-if-changed",
+            ".",
+          ],
         ).indicatesSuccess &&
         success;
   }
