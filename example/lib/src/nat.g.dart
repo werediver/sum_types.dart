@@ -6,18 +6,16 @@ part of 'nat.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_NatRecord _$_NatRecordFromJson(Map<String, dynamic> json) {
-  return _NatRecord(
-    zero: json['zero'] == null
-        ? null
-        : Unit.fromJson(json['zero'] as Map<String, dynamic>),
-    next: json['next'] == null
-        ? null
-        : _NatRecord.fromJson(json['next'] as Map<String, dynamic>),
-  );
-}
+_NatRecord _$NatRecordFromJson(Map<String, dynamic> json) => _NatRecord(
+      zero: json['zero'] == null
+          ? null
+          : Unit.fromJson(json['zero'] as Map<String, dynamic>),
+      next: json['next'] == null
+          ? null
+          : _NatRecord.fromJson(json['next'] as Map<String, dynamic>),
+    );
 
-Map<String, dynamic> _$_NatRecordToJson(_NatRecord instance) {
+Map<String, dynamic> _$NatRecordToJson(_NatRecord instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {

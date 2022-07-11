@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:sum_types/sum_types.dart';
 import 'package:meta/meta.dart';
+import 'package:sum_types/sum_types.dart';
 
 part 'optional.g.dart';
 
