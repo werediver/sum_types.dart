@@ -33,6 +33,7 @@ Map<String, dynamic> _$NatRecordToJson(_NatRecord instance) {
 // SumTypesGenerator
 // **************************************************************************
 
+// ignore_for_file: unused_element
 abstract class _$Nat {
   const _$Nat({
     this.zero,
@@ -56,13 +57,11 @@ abstract class _$Nat {
       $T? next,
     })
         make,
-  ) {
-    return iswitch(
-      zero: () => make(zero: const Unit()),
-      next: (next) => make(next: next.dump(make)),
-    );
-  }
-
+  ) =>
+      iswitch(
+        zero: () => make(zero: const Unit()),
+        next: (next) => make(next: next.dump(make)),
+      );
   $T iswitch<$T>({
     required $T Function() zero,
     required $T Function(Nat) next,
@@ -77,9 +76,9 @@ abstract class _$Nat {
   }
 
   $T iswitcho<$T>({
+    required $T Function() otherwise,
     $T Function()? zero,
     $T Function(Nat)? next,
-    required $T Function() otherwise,
   }) {
     $T _otherwise(Object? _) => otherwise();
     return iswitch(
@@ -90,13 +89,12 @@ abstract class _$Nat {
 
   @override
   bool operator ==(
-    dynamic other,
-  ) {
-    return other.runtimeType == runtimeType &&
-        other.zero == zero &&
-        other.next == next;
-  }
-
+    Object other,
+  ) =>
+      other.runtimeType == runtimeType &&
+      other is Nat &&
+      other.zero == zero &&
+      other.next == next;
   @override
   int get hashCode {
     var result = 17;
