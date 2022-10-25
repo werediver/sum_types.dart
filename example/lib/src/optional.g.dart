@@ -6,6 +6,7 @@ part of 'optional.dart';
 // SumTypesGenerator
 // **************************************************************************
 
+// ignore_for_file: unused_element
 abstract class _$Optional<T> {
   const _$Optional({
     this.some,
@@ -29,13 +30,11 @@ abstract class _$Optional<T> {
       Unit? none,
     })
         make,
-  ) {
-    return iswitch(
-      some: (some) => make(some: some),
-      none: () => make(none: const Unit()),
-    );
-  }
-
+  ) =>
+      iswitch(
+        some: (some) => make(some: some),
+        none: () => make(none: const Unit()),
+      );
   $T iswitch<$T>({
     required $T Function(T) some,
     required $T Function() none,
@@ -50,9 +49,9 @@ abstract class _$Optional<T> {
   }
 
   $T iswitcho<$T>({
+    required $T Function() otherwise,
     $T Function(T)? some,
     $T Function()? none,
-    required $T Function() otherwise,
   }) {
     $T _otherwise(Object? _) => otherwise();
     return iswitch(
@@ -63,13 +62,12 @@ abstract class _$Optional<T> {
 
   @override
   bool operator ==(
-    dynamic other,
-  ) {
-    return other.runtimeType == runtimeType &&
-        other.some == some &&
-        other.none == none;
-  }
-
+    Object other,
+  ) =>
+      other.runtimeType == runtimeType &&
+      other is Optional &&
+      other.some == some &&
+      other.none == none;
   @override
   int get hashCode {
     var result = 17;

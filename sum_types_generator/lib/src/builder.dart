@@ -17,6 +17,7 @@ class SumTypesGenerator extends GeneratorForAnnotation<annotations.SumType> {
 }
 
 String generateSumType(SumTypeSpec spec) => [
+      "// ignore_for_file: unused_element\n",
       // The sum-type base class
       classDecl(
         abstract: true,
@@ -41,18 +42,17 @@ String generateSumType(SumTypeSpec spec) => [
           inexhaustiveSwitch(spec: spec, implement: true),
           // Equality test
           "@override",
-          function(
+          expressionFunction(
             type: "bool",
             name: "operator ==",
-            posParams: [param(type: "dynamic", name: "other")],
+            posParams: [param(type: "Object", name: "other")],
             body: [
-              "return",
               [
                 "other.runtimeType == runtimeType",
+                "other is ${spec.sumTypeName}",
                 for (final caseSpec in spec.cases)
                   "other.${caseSpec.name} == ${caseSpec.name}"
               ].join("&&"),
-              ";",
             ],
           ),
           // Hash function
@@ -172,7 +172,7 @@ String loadFromRecord(SumTypeSpec spec) => function(
       ],
     );
 
-String dumpToRecord(SumTypeSpec spec) => function(
+String dumpToRecord(SumTypeSpec spec) => expressionFunction(
       type: "\$T",
       name: "dump",
       typeParams: [const TypeParamSpec(name: "\$T")],
@@ -195,7 +195,7 @@ String dumpToRecord(SumTypeSpec spec) => function(
         ),
       ],
       body: [
-        "return iswitch(",
+        "iswitch(",
         ...spec.cases
             .map(
               (c) => [
@@ -212,7 +212,7 @@ String dumpToRecord(SumTypeSpec spec) => function(
               ].join(),
             )
             .map(appendComma),
-        ");",
+        ")",
       ],
     );
 
@@ -257,6 +257,10 @@ String inexhaustiveSwitch({
       name: "iswitcho",
       typeParams: [const TypeParamSpec(name: "\$T")],
       namedParams: [
+        param(
+          type: "required \$T Function()",
+          name: "otherwise",
+        ),
         for (final caseSpec in spec.cases)
           param(
             type: [
@@ -266,10 +270,6 @@ String inexhaustiveSwitch({
             ].join(),
             name: caseSpec.name,
           ),
-        param(
-          type: "required \$T Function()",
-          name: "otherwise",
-        ),
       ],
       body: implement
           ? [
