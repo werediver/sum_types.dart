@@ -141,6 +141,33 @@ String function({
         ";",
     ].join("\n");
 
+String expressionFunction({
+  required String type,
+  required String name,
+  required Iterable<String> body,
+  bool isStatic = false,
+  Iterable<TypeParamSpec> typeParams = const [],
+  Iterable<String> posParams = const [],
+  Iterable<String> namedParams = const [],
+}) =>
+    [
+      if (isStatic) "static ",
+      type,
+      " ",
+      name,
+      parametrize(typeParams),
+      "(",
+      ...posParams.map(appendComma),
+      if (namedParams.isNotEmpty) ...[
+        "{",
+        ...namedParams.map(appendComma),
+        "}",
+      ],
+      ") =>",
+      body.join("\n"),
+      ";",
+    ].join("\n");
+
 String param({String? type, required String name}) => [
       if (type != null) type,
       name,

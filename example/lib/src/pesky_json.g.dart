@@ -6,6 +6,7 @@ part of 'pesky_json.dart';
 // SumTypesGenerator
 // **************************************************************************
 
+// ignore_for_file: unused_element
 abstract class _$PeskyJson {
   const _$PeskyJson({
     this.object,
@@ -110,17 +111,15 @@ abstract class _$PeskyJson {
       Unit? empty,
     })
         make,
-  ) {
-    return iswitch(
-      object: (object) => make(object: object),
-      array: (array) => make(array: array),
-      string: (string) => make(string: string),
-      number: (number) => make(number: number),
-      boolean: (boolean) => make(boolean: boolean),
-      empty: () => make(empty: const Unit()),
-    );
-  }
-
+  ) =>
+      iswitch(
+        object: (object) => make(object: object),
+        array: (array) => make(array: array),
+        string: (string) => make(string: string),
+        number: (number) => make(number: number),
+        boolean: (boolean) => make(boolean: boolean),
+        empty: () => make(empty: const Unit()),
+      );
   $T iswitch<$T>({
     required $T Function(Map<String, PeskyJson>) object,
     required $T Function(Iterable<PeskyJson>) array,
@@ -147,13 +146,13 @@ abstract class _$PeskyJson {
   }
 
   $T iswitcho<$T>({
+    required $T Function() otherwise,
     $T Function(Map<String, PeskyJson>)? object,
     $T Function(Iterable<PeskyJson>)? array,
     $T Function(String)? string,
     $T Function(double)? number,
     $T Function(bool)? boolean,
     $T Function()? empty,
-    required $T Function() otherwise,
   }) {
     $T _otherwise(Object? _) => otherwise();
     return iswitch(
@@ -168,17 +167,16 @@ abstract class _$PeskyJson {
 
   @override
   bool operator ==(
-    dynamic other,
-  ) {
-    return other.runtimeType == runtimeType &&
-        other.object == object &&
-        other.array == array &&
-        other.string == string &&
-        other.number == number &&
-        other.boolean == boolean &&
-        other.empty == empty;
-  }
-
+    Object other,
+  ) =>
+      other.runtimeType == runtimeType &&
+      other is PeskyJson &&
+      other.object == object &&
+      other.array == array &&
+      other.string == string &&
+      other.number == number &&
+      other.boolean == boolean &&
+      other.empty == empty;
   @override
   int get hashCode {
     var result = 17;
