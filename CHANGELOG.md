@@ -1,3 +1,8 @@
+## 0.3.3
+
+- Fix a few warnings in the generated code
+- Remove the use of `dynamic` type in the generator and the generated code
+
 ## 0.3.2
 
 - Update `analyzer` constraint to `'>=2.0.0 <5.0.0'`
