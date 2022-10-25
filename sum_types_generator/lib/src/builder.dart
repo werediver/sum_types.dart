@@ -7,12 +7,15 @@ import 'package:sum_types_generator/src/sum_type_spec.dart';
 import 'package:sum_types_generator/src/templates.dart';
 
 Builder sumTypesBuilder(BuilderOptions options) =>
-    SharedPartBuilder([SumTypesGenerator()], 'sum_types');
+    SharedPartBuilder([SumTypesGenerator()], "sum_types");
 
 class SumTypesGenerator extends GeneratorForAnnotation<annotations.SumType> {
   @override
   Object generateForAnnotatedElement(
-          Element element, ConstantReader annotation, BuildStep buildStep) =>
+    Element element,
+    ConstantReader annotation,
+    BuildStep buildStep,
+  ) =>
       generateSumType(makeSumTypeSpec(element, annotation));
 }
 

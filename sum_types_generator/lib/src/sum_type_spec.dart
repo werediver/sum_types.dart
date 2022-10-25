@@ -32,8 +32,9 @@ class CaseSpec {
   });
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       other.runtimeType == runtimeType &&
+      other is CaseSpec &&
       other.name == name &&
       other.type == type;
 
@@ -58,8 +59,9 @@ class CaseTypeSpec {
   });
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       other.runtimeType == runtimeType &&
+      other is CaseTypeSpec &&
       other.name == name &&
       other.requiresPayload == requiresPayload &&
       other.isDirectlyRecursive == isDirectlyRecursive;
