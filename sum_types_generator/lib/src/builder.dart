@@ -163,7 +163,8 @@ String loadFromRecord(SumTypeSpec spec) => function(
             if (expected.type.isDirectlyRecursive)
               "load(rec.${expected.name}!)"
             else if (expected.type.requiresPayload)
-              "rec.${expected.name}!",
+              decorateArg(expected.parameterStyle, expected.parameterName,
+                  "rec.${expected.name}!"),
             ");",
             "} else ",
           ].join();
@@ -171,6 +172,16 @@ String loadFromRecord(SumTypeSpec spec) => function(
         "{ throw Exception(\"Cannot select a \$${spec.sumTypeName} case given \$rec\"); }",
       ],
     );
+
+String decorateArg(
+    ParameterStyle parameterStyle, String parameterName, String argValue) {
+  switch (parameterStyle) {
+    case ParameterStyle.positional:
+      return argValue;
+    case ParameterStyle.named:
+      return "$parameterName: $argValue";
+  }
+}
 
 String dumpToRecord(SumTypeSpec spec) => expressionFunction(
       type: "\$T",
