@@ -29,25 +29,35 @@ class CaseSpec {
   const CaseSpec({
     required this.name,
     required this.type,
+    required this.parameterStyle,
+    required this.parameterName,
   });
 
   @override
   bool operator ==(dynamic other) =>
       other.runtimeType == runtimeType &&
       other.name == name &&
-      other.type == type;
+      other.type == type &&
+      other.parameterStyle == parameterStyle &&
+      other.parameterName == parameterName;
 
   @override
   int get hashCode {
     var result = 17;
     result = 37 * result + name.hashCode;
     result = 37 * result + type.hashCode;
+    result = 37 * result + parameterStyle.hashCode;
+    result = 37 * result + parameterName.hashCode;
     return result;
   }
 
   final String name;
   final CaseTypeSpec type;
+  final ParameterStyle parameterStyle;
+  final String parameterName;
 }
+
+enum ParameterStyle { positional, named }
 
 @immutable
 class CaseTypeSpec {
@@ -116,9 +126,23 @@ CaseSpec _makeCaseSpec(
   required CaseTypeSpec Function(DartType?) makeCaseTypeSpec,
 }) {
   if (ctor.parameters.length <= 1) {
+    final ParameterStyle style;
+    final name = ctor.parameters.isNotEmpty ? ctor.parameters.single.name : "";
     final caseType =
         ctor.parameters.isNotEmpty ? ctor.parameters.single.type : null;
-    return CaseSpec(name: ctor.name, type: makeCaseTypeSpec(caseType));
+
+    if (ctor.parameters.isNotEmpty && ctor.parameters.single.isNamed) {
+      style = ParameterStyle.named;
+    } else {
+      style = ParameterStyle.positional;
+    }
+
+    return CaseSpec(
+      name: ctor.name,
+      type: makeCaseTypeSpec(caseType),
+      parameterStyle: style,
+      parameterName: name,
+    );
   }
   throw Exception(
     "Case-constructor ${ctor.name} shall have at most one parameter",
