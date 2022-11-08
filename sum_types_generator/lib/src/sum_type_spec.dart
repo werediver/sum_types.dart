@@ -172,18 +172,8 @@ CaseTypeSpec _makeCaseTypeSpec({
 
 String _resolveTypeName(
   DartType type, {
-  String? Function(DartType)? name,
+  String Function(DartType)? name,
 }) {
-  final _name = name ?? (type) => type.element?.name;
-
-  String _resolveTypeName(DartType type) => [
-        _name(type),
-        if (type is ParameterizedType && type.typeArguments.isNotEmpty) ...[
-          "<",
-          type.typeArguments.map(_resolveTypeName).join(", "),
-          ">",
-        ]
-      ].join();
-
-  return _resolveTypeName(type);
+  final _name = name ?? (type) => type.getDisplayString(withNullability: false);
+  return _name(type);
 }
