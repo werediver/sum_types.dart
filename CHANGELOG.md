@@ -1,3 +1,7 @@
+## 0.3.4
+
+- Support types visible through qualified imports (`import … as …;`)
+
 ## 0.3.3
 
 - Fix a few warnings in the generated code
