@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:sum_types/sum_types.dart';
@@ -95,11 +96,23 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
   final noPayloadTypeInstance = "const $noPayloadTypeName()";
 
   if (element is ClassElement && !element.isMixin && !element.isEnum) {
+    final importPrefixes = Map.fromEntries(
+      element.library.prefixes.expand(
+        (o) => element.library
+            .getImportsWithPrefix(o)
+            .map((import) =>
+                import.importedLibrary?.location?.components.firstOrNull)
+            .whereNotNull()
+            .map((importLocation) => MapEntry(importLocation, o.name)),
+      ),
+    );
+
     final sumTypeName = element.name;
     CaseTypeSpec __makeCaseTypeSpec(DartType? type) => _makeCaseTypeSpec(
           declaredCaseType: type,
           sumTypeName: sumTypeName,
           noPayloadTypeName: noPayloadTypeName,
+          importPrefixes: importPrefixes,
         );
     CaseSpec __makeCaseSpec(ConstructorElement ctor) =>
         _makeCaseSpec(ctor, makeCaseTypeSpec: __makeCaseTypeSpec);
@@ -155,9 +168,13 @@ CaseTypeSpec _makeCaseTypeSpec({
   DartType? declaredCaseType,
   required String sumTypeName,
   required String noPayloadTypeName,
+  required Map<String, String>? importPrefixes,
 }) {
   if (declaredCaseType != null) {
-    final resolvedTypeName = _resolveTypeName(declaredCaseType);
+    final resolvedTypeName = _resolveTypeName(
+      declaredCaseType,
+      importPrefixes: importPrefixes,
+    );
     return CaseTypeSpec(
       name: resolvedTypeName,
       requiresPayload: true,
@@ -175,7 +192,18 @@ CaseTypeSpec _makeCaseTypeSpec({
 String _resolveTypeName(
   DartType type, {
   String Function(DartType)? name,
+  Map<String, String>? importPrefixes,
 }) {
-  final _name = name ?? (type) => type.getDisplayString(withNullability: false);
+  final _name = name ??
+      (type) {
+        final prefix =
+            importPrefixes?[type.element?.library?.location?.components.first];
+        return [
+          if (prefix != null) "$prefix.",
+          type.getDisplayString(
+            withNullability: false,
+          )
+        ].join();
+      };
   return _name(type);
 }
