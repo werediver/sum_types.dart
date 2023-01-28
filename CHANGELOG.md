@@ -1,3 +1,7 @@
+## 0.3.5
+
+- Update `analyzer` constraint to `'>=4.6.0 <6.0.0'`
+
 ## 0.3.4
 
 - Support types visible through qualified imports (`import … as …;`)
