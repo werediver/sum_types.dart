@@ -95,11 +95,12 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
   final noPayloadTypeName = "$Unit";
   final noPayloadTypeInstance = "const $noPayloadTypeName()";
 
-  if (element is ClassElement && !element.isMixin && !element.isEnum) {
+  if (element is ClassElement &&
+      element is! MixinElement &&
+      element is! EnumElement) {
     final importPrefixes = Map.fromEntries(
       element.library.prefixes.expand(
-        (o) => element.library
-            .getImportsWithPrefix(o)
+        (o) => o.imports
             .map((import) =>
                 import.importedLibrary?.location?.components.firstOrNull)
             .whereNotNull()
@@ -124,7 +125,7 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
       typeParams: element.typeParameters.map(
         (e) => TypeParamSpec(
           name: e.name,
-          bound: e.bound?.element?.name,
+          bound: e.bound?.element2?.name,
         ),
       ),
       cases: element.constructors
@@ -197,7 +198,7 @@ String _resolveTypeName(
   final _name = name ??
       (type) {
         final prefix =
-            importPrefixes?[type.element?.library?.location?.components.first];
+            importPrefixes?[type.element2?.library?.location?.components.first];
         return [
           if (prefix != null) "$prefix.",
           type.getDisplayString(
