@@ -103,7 +103,7 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
         (o) => o.imports
             .map((import) =>
                 import.importedLibrary?.location?.components.firstOrNull)
-            .whereNotNull()
+            .nonNulls
             .map((importLocation) => MapEntry(importLocation, o.name)),
       ),
     );
@@ -125,7 +125,7 @@ SumTypeSpec makeSumTypeSpec(Element element, ConstantReader annotation) {
       typeParams: element.typeParameters.map(
         (e) => TypeParamSpec(
           name: e.name,
-          bound: e.bound?.element2?.name,
+          bound: e.bound?.element?.name,
         ),
       ),
       cases: element.constructors
@@ -198,12 +198,15 @@ String _resolveTypeName(
   final _name = name ??
       (type) {
         final prefix =
-            importPrefixes?[type.element2?.library?.location?.components.first];
+            importPrefixes?[type.element?.library?.location?.components.first];
         return [
           if (prefix != null) "$prefix.",
           type.getDisplayString(
-            withNullability: false,
-          )
+            // Newer versions of "analyzer" (somewhere after 6.0.0) declare `withNullability`
+            // deprecated (and locked to `true`), but older versions require it.
+            // ignore: deprecated_member_use
+            withNullability: true,
+          ),
         ].join();
       };
   return _name(type);

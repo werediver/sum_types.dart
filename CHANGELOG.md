@@ -1,3 +1,8 @@
+## 0.4.0
+
+- Set SDK version to `'>=3.0.0 <4.0.0'`
+- Allow `analyzer` versions 6.x.x
+
 ## 0.3.5
 
 - Update `analyzer` constraint to `'>=4.6.0 <6.0.0'`
