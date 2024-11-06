@@ -109,8 +109,7 @@ abstract class _$PeskyJson {
       double? number,
       bool? boolean,
       Unit? empty,
-    })
-        make,
+    }) make,
   ) =>
       iswitch(
         object: (object) => make(object: object),

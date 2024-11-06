@@ -28,8 +28,7 @@ abstract class _$Optional<T> {
     $T Function({
       T? some,
       Unit? none,
-    })
-        make,
+    }) make,
   ) =>
       iswitch(
         some: (some) => make(some: some),

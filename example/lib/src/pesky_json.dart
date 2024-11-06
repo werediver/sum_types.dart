@@ -19,7 +19,7 @@ class PeskyJson extends _$PeskyJson {
         json.map((key, value) => MapEntry(key, PeskyJson.fromJson(value))),
       );
     } else if (json is Iterable<Object>) {
-      return PeskyJson.array(json.map((json) => PeskyJson.fromJson(json)));
+      return PeskyJson.array(json.map(PeskyJson.fromJson));
     } else if (json is String) {
       return PeskyJson.string(json);
     } else if (json is num) {

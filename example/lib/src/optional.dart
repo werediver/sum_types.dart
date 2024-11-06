@@ -14,12 +14,12 @@ class Optional<T> extends _$Optional<T> {
 
   Optional<U> map<U>(U Function(T) f) => iswitch(
         some: (value) => Optional.some(f(value)),
-        none: () => Optional<U>.none(),
+        none: Optional<U>.none,
       );
 
   Optional<U> flatMap<U>(Optional<U> Function(T) f) => iswitch(
-        some: (value) => f(value),
-        none: () => Optional<U>.none(),
+        some: f,
+        none: Optional<U>.none,
       );
 
   T valueOr(T Function() fallback) =>

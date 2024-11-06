@@ -55,8 +55,7 @@ abstract class _$Nat {
     $T Function({
       Unit? zero,
       $T? next,
-    })
-        make,
+    }) make,
   ) =>
       iswitch(
         zero: () => make(zero: const Unit()),
